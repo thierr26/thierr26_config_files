@@ -1,0 +1,13 @@
+MAILDIR=<absolute_path_to_nmh_mail_dir>
+LOGFILE=$MAILDIR/procmail.log
+
+:0fw
+| /usr/bin/bogofilter -uep
+
+:0:
+* ^X-Bogosity: Spam, tests=bogofilter
+Spam/.
+
+:0:
+* ^X-Bogosity: Unsure, tests=bogofilter
+Unsure\ spam/.

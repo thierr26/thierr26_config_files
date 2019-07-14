@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openbox_menu xmlns="http://openbox.org/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://openbox.org/                 file:///usr/share/openbox/menu.xsd">
+	<menu id="root-menu" label="Openbox 3">
+		<item label="_tmux in xterm (undecorated)">
+			<action name="Execute">
+				<execute>xterm tmux</execute>
+			</action>
+		</item>
+		<item label="Sa_kura">
+			<action name="Execute">
+				<execute>sakura</execute>
+			</action>
+		</item>
+		<item label="_Web browser">
+			<action name="Execute">
+				<execute>x-www-browser</execute>
+			</action>
+		</item>
+		<item label="Claws _Mail">
+			<action name="Execute">
+				<execute>claws-mail</execute>
+			</action>
+		</item>
+		<menu id="root-menu-452740" label="Other favorite applications">
+			<item label="Thunar">
+				<action name="Execute">
+					<execute>thunar</execute>
+				</action>
+			</item>
+			<item label="gVim">
+				<action name="Execute">
+					<execute>gvim</execute>
+				</action>
+			</item>
+			<item label="xzgv">
+				<action name="Execute">
+					<execute>xzgv</execute>
+				</action>
+			</item>
+			<item label="Gimp">
+				<action name="Execute">
+					<execute>gimp</execute>
+				</action>
+			</item>
+			<item label="VLC">
+				<action name="Execute">
+					<execute>vlc</execute>
+				</action>
+			</item>
+			<item label="Octave">
+				<action name="Execute">
+					<execute>octave --force-gui</execute>
+				</action>
+			</item>
+			<item label="gFTP">
+				<action name="Execute">
+					<execute>gftp</execute>
+				</action>
+			</item>
+			<item label="GNAT Programming Studio">
+				<action name="Execute">
+					<execute>gnat-gps</execute>
+				</action>
+			</item>
+		</menu>
+		<separator/>
+		<!-- This requires the presence of the 'openbox-menu' package to work -->
+		<menu execute="/usr/bin/obamenu" id="applications-menu" label="Applications"/>
+		<menu id="root-menu-882143" label="Openbox">
+			<item label="Configure (with ObConf)">
+				<action name="Execute">
+					<execute>obconf</execute>
+				</action>
+			</item>
+			<item label="Edit menu (with Obmenu)">
+				<action name="Execute">
+					<execute>obmenu</execute>
+				</action>
+			</item>
+			<item label="Reload configuration">
+				<action name="Reconfigure"/>
+			</item>
+			<item label="Restart">
+				<action name="Restart"/>
+			</item>
+		</menu>
+		<separator/>
+		<item label="_Lock the system">
+			<action name="Execute">
+				<execute>physlock</execute>
+			</action>
+		</item>
+		<item label="Exit Openbox">
+			<action name="Execute">
+				<prompt>Are you sure you want to exit Openbox?</prompt>
+				<execute>openbox --exit</execute>
+			</action>
+		</item>
+		<item label="Reboot the system">
+			<action name="Execute">
+				<prompt>Are you sure you want to reboot the system?</prompt>
+				<execute>systemctl reboot</execute>
+			</action>
+		</item>
+		<item label="Shutdown the system">
+			<action name="Execute">
+				<prompt>Are you sure you want to shutdown the system?</prompt>
+				<execute>systemctl poweroff</execute>
+			</action>
+		</item>
+	</menu>
+</openbox_menu>
