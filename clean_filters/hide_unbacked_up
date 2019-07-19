@@ -1,0 +1,7 @@
+#!/bin/sh
+
+R=relative_unbacked_up_;
+
+sed "s/^\(\s*--exclude=\)[^.]\+$/\1\<${R}dir_path\> \\\/; \
+     s/^\(\s*--exclude=\)[^.]\+\.[^.]\+$/\1\<${R}file_path\> \\\/;" \
+     $1
