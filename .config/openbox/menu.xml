@@ -57,6 +57,11 @@
 					<execute>gftp</execute>
 				</action>
 			</item>
+			<item label="Dlume">
+				<action name="Execute">
+					<execute>dlume</execute>
+				</action>
+			</item>
 			<item label="GNAT Programming Studio">
 				<action name="Execute">
 					<execute>gnat-gps</execute>
