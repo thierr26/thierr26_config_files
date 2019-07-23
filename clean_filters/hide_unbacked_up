@@ -3,5 +3,6 @@
 R=relative_unbacked_up_;
 
 sed "s/^\(\s*--exclude=\)[^.]\+$/\1\<${R}dir_path\> \\\/; \
-     s/^\(\s*--exclude=\)[^.]\+\.[^.]\+$/\1\<${R}file_path\> \\\/;" \
+     s/^\(\s*--exclude=\)[^.]\+\.[^.]\+$/\1\<${R}file_path\> \\\/; \
+     s/\(SECRET_DIR_PATH=\).\+$/\1\<abs_secret_dir\>/;" \
      $1
