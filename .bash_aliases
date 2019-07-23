@@ -137,6 +137,8 @@ rsync_data_backup() {
     local TARGET=;
     local SPECIFIC_EXCLUDE=;
     local DEST=;
+    local SN=;
+    local SZ=;
 
     [ $# -eq 0 ] \
         && echo "${ERR_PREF}At least one argument required." 1>&2 \
@@ -171,6 +173,8 @@ rsync_data_backup() {
         && echo "${ERR_PREF}Inexistent Destination directory: $DEST." 1>&2 \
         && return 1;
 
+    SN="$(secret -n)";
+    SZ="$(secret -z)";
     rsync $DRYRUN_OPT -aAXv --delete \
         --exclude=<relative_unbacked_up_dir_path> \
         --exclude=<relative_unbacked_up_dir_path> \
