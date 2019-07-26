@@ -13,6 +13,7 @@ filetype plugin indent on
 " Returns a truthy value if the argument is the path to a writable directory.
 " If the directory does not exist, then the function attempts to create it,
 " with permission 0700 (rwx------: readable and writable only for the owner).
+" Directory creation is not attempted if function mkdir is not available.
 "
 " Arguments:
 "
@@ -20,17 +21,14 @@ filetype plugin indent on
 " Path to a directory.
 "
 " Return value:
-" Non-zero if the argument is the path to a writable directory, zero otherwise.
+" Non-zero if the argument is the path to a writable directory (created by the
+" function if it did not exist), zero otherwise.
 function s:CanWriteToDir(path_to_dir)
 
-    let l:Ret = (filewritable(a:path_to_dir) == 2)
-    if !l:Ret
-        if exists("*mkdir")
-            silent! call mkdir(a:path_to_dir, "p", 0700)
-        endif
-        let l:Ret = (filewritable(a:path_to_dir) == 2)
+    if !isdirectory(a:path_to_dir) && exists("*mkdir")
+        silent! call mkdir(a:path_to_dir, "p", 0700)
     endif
-    return l:Ret
+    return (filewritable(a:path_to_dir) == 2)
 
 endfunction
 
