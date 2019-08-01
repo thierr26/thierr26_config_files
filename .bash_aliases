@@ -3,6 +3,7 @@ alias ds='du -sBM'
 alias e='vi -O'
 alias fm='fetchmail --sslproto="" --mda "procmail -f %F" && inc'
 alias g=git
+alias ggrep='git grep --no-index'
 alias ifp='sudo ifp'
 alias lla='ls -la'
 alias m=make
