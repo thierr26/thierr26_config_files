@@ -3,6 +3,7 @@
 	email = <my_email_address>
 [push]
 	default = simple
+	followtags = true
 [alias]
 	s = status
 	d = diff
@@ -15,5 +16,10 @@
 	cam = commit -am
 	p = push
 	graph = log --graph --oneline --all
+	release = "!if [ -n \"$1\" ]; then \
+	                git tag -a \"v$1\" -m \"Release $1\"; \
+	            else \
+	                echo \"Empty argument, nothing done\"; \
+	            fi; #"
 [credential]
 	helper = store
