@@ -4,6 +4,8 @@ alias e='vi -O'
 alias fm='fetchmail --sslproto="" --mda "procmail -f %F" && inc'
 alias g=git
 alias ggrep='git grep --no-index'
+alias gnat2018="PATH=$HOME/opt/GNAT/2018/bin:$PATH"
+alias gnat2019="PATH=$HOME/opt/GNAT/2019/bin:$PATH"
 alias ifp='sudo ifp'
 alias lla='ls -la'
 alias m=make
