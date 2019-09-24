@@ -17,3 +17,7 @@ alias l='ls $LS_OPTIONS -lA'
 # alias rm='rm -i'
 # alias cp='cp -i'
 # alias mv='mv -i'
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi

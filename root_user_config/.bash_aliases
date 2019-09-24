@@ -1,0 +1,5 @@
+alias ds='du -sBM'
+alias e='vi -O'
+alias ggrep='git grep --no-index'
+alias la='ls $LS_OPTIONS -a'
+alias lla='ls $LS_OPTIONS -la'
