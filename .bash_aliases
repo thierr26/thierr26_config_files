@@ -370,3 +370,118 @@ EOF
 
     gcal --resource-file="$R" -H no -ox;
 }
+
+net() {
+
+    # Issue a "sudo systemctl <operation> networking" command, <operation>
+    # being one of "stop", "start" and "restart". The first argument is used as
+    # <operation>.
+
+    local ERR_PREF="${FUNCNAME[0]}: ";
+
+    case "$1" in
+        stop | start | restart)
+            ;;
+        *)
+            echo "${ERR_PREF}Unsupported operation: $1" 1>&2 \
+                && return 1;
+            ;;
+    esac;
+
+    sudo systemctl "$1" networking;
+
+}
+
+wif() {
+
+    # Output the name of the wireless network interface if it's up.
+
+    local ERR_PREF="${FUNCNAME[0]}: ";
+    local MSG="No wireless interface up";
+
+    local OUTPUT=$(/sbin/iwconfig 2>/dev/null \
+        |grep -v "^\(\s\|$\)" \
+        |grep -v "\sESSID:off/any\s*$" \
+        |sed "s/\s.\+$//");
+
+    [ -z "$OUTPUT" ] && echo "$ERR_PREF$MSG" 1>&2 && return 1;
+
+    echo "$OUTPUT";
+
+}
+
+essid() {
+
+    # Output the ESSID name of the wireless network if the wireless network
+    # interface is up.
+
+    local ERR_PREF="${FUNCNAME[0]}: ";
+    local MSG="No wireless interface up";
+
+    local OUTPUT=$(/sbin/iwconfig 2>/dev/null \
+        |grep -v "^\(\s\|$\)" \
+        |sed "s/\s*Nickname:\".\+$//" \
+        |grep -v "\sESSID:off/any\s*$" \
+        |sed 's/^.\+\sESSID:"\?//' \
+        |sed 's/"\s*$//');
+
+    [ -z "$OUTPUT" ] && echo "$ERR_PREF$MSG" 1>&2 && return 1;
+
+    echo "$OUTPUT";
+
+}
+
+wlscan() {
+
+    # Show the available wireless networks.
+
+    local KEY_OFF_MARK="Encr. key off";
+    local KEY_ON_MARK="             ";
+
+    local ESSID_SEEN=false;
+    local KEY_SEEN=false;
+    local QUAL_SEEN=false;
+
+    local ESSID;
+    local KEY_MARK;
+    local QUAL;
+
+    while IFS= read -r LINE; do
+
+        echo "$LINE"|grep -q "^\s*Cell [0-9]\+ - " \
+                && ESSID_SEEN=false && KEY_SEEN=false && QUAL_SEEN=false;
+
+        if [ "$(echo "$LINE"|grep -c '^\s*ESSID:\"[^\"]')" -gt 0 ]; then
+            ESSID_SEEN=true;
+            ESSID="$(echo "$LINE"|sed 's/\"$//'|sed 's/^.\+\"//')";
+        fi;
+
+        if [ "$(echo "$LINE"|grep -c '^\s*Encryption key:off')" -gt 0 ]; then
+            KEY_SEEN=true;
+            KEY_MARK="$KEY_OFF_MARK";
+        fi;
+        if [ "$(echo "$LINE"|grep -c '^\s*Encryption key:on')" -gt 0 ]; then
+            KEY_SEEN=true;
+            KEY_MARK="$KEY_ON_MARK";
+        fi;
+
+        if [ "$(echo "$LINE"|grep -c "^\s*Quality=")" -gt 0 ]; then
+            QUAL_SEEN=true;
+            QUAL=$(printf "%7s" \
+                $(echo "$LINE"|sed "s/^.\+Quality=//"|sed "s/ .\+$//"));
+        fi;
+
+        if [[ "$ESSID_SEEN" = true \
+                && "$KEY_SEEN" = true \
+                && "$QUAL_SEEN" = true ]]; then
+
+            echo "$QUAL" "$KEY_MARK" "$ESSID";
+
+            ESSID_SEEN=false;
+            KEY_SEEN=false;
+            QUAL_SEEN=false;
+        fi;
+
+    done < <(sudo /sbin/iwlist $(wif) scan);
+
+}
