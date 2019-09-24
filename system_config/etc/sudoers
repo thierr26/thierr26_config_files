@@ -22,8 +22,16 @@ root	ALL=(ALL:ALL) ALL
 # Allow members of group sudo to execute any command
 %sudo	ALL=(ALL:ALL) ALL
 
+# Allow members of group netdev to execute some networking related commands
+# without password
+%netdev	ALL=(ALL:ALL) NOPASSWD: /usr/bin/systemctl stop networking, \
+                      /usr/bin/systemctl start networking, \
+                      /usr/bin/systemctl restart networking, \
+                      /usr/sbin/dhclient, \
+                      /sbin/iwlist * scan
+
 # Allow any user to execute /usr/bin/ifp without password
-ALL	ALL=NOPASSWD: /usr/bin/ifp
+ALL	ALL=(ALL:ALL) NOPASSWD: /usr/bin/ifp
 
 # See sudoers(5) for more information on "#include" directives:
 
