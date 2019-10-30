@@ -1,7 +1,7 @@
 alias am=alsamixer
 alias ds='du -sBM'
 alias e='vi -O'
-alias fm='fetchmail --sslproto="" --mda "procmail -f %F" && inc'
+alias fm='fetchmail --mda "procmail -f %F" && inc'
 alias g=git
 alias ggrep='git grep --no-index'
 alias gnat2018="PATH=$HOME/opt/GNAT/2018/bin:$PATH"
