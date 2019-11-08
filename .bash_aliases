@@ -51,16 +51,16 @@ secret() {
     # Handle "secret" directory. Exactly one argument required (the option).
     #
     # Option "-n": Output path to secret directory (which may exist or not).
-    # Option "-z": Output path to secret directory archive (.tgz file) (which
+    # Option "-a": Output path to secret directory archive (.tar file) (which
     #              does probably not exist, used as temporary file).
-    # Option "-p": Output path to encrypted secret directory archive (.tgz.gpg
+    # Option "-p": Output path to encrypted secret directory archive (.tar.gpg
     #              file) (which should exist).
     # Option "-e": Encrypt secret directory.
     # Option "-d": Decrypt secret directory (keeps encrypted file).
 
     local ERR_PREF="${FUNCNAME[0]}: ";
     local SECRET_DIR_PATH="$(data_dir)"/secret/directory; # Adapt to your needs.
-    local SECRET_FILE_PATH="$SECRET_DIR_PATH".tgz;
+    local SECRET_FILE_PATH="$SECRET_DIR_PATH".tar;
     local SECRET_GPG_PATH="$SECRET_FILE_PATH".gpg;
     local SECRET_PARENT="${SECRET_DIR_PATH%/*}";
     local ARG=true;
@@ -74,7 +74,7 @@ secret() {
 
     [ $ARG = true ] \
         && [ "$1" != "-n" ] \
-        && [ "$1" != "-z" ] \
+        && [ "$1" != "-a" ] \
         && [ "$1" != "-p" ] \
         && [ "$1" != "-e" ] \
         && [ "$1" != "-d" ] \
@@ -82,14 +82,14 @@ secret() {
 
     [[ $ARG = "false" || $VALID_ARG = "false" ]] \
         && echo "${ERR_PREF}$EXAC:" \
-            "\"-n\", \"-z\", \"-p\", \"-e\" or \"-d\"." 1>&2 \
+            "\"-n\", \"-a\", \"-p\", \"-e\" or \"-d\"." 1>&2 \
         && return 1;
 
     case "$1" in
         -n)
             echo "$SECRET_DIR_PATH";
             ;;
-        -z)
+        -a)
             echo "$SECRET_FILE_PATH";
             ;;
         -p)
@@ -103,7 +103,7 @@ secret() {
             echo "$ENCR"...;
             rm -f "$SECRET_GPG_PATH";
             [ -f "$SECRET_FILE_PATH" ] && shred -u "$SECRET_FILE_PATH";
-            tar -C "$SECRET_PARENT" -czvf \
+            tar -C "$SECRET_PARENT" -cvf \
                 "$SECRET_FILE_PATH" "${SECRET_DIR_PATH##*/}";
             gpg -c "$SECRET_FILE_PATH";
             shred -u "$SECRET_FILE_PATH";
@@ -123,7 +123,7 @@ secret() {
             echo "$DECR"...;
             [ -f "$SECRET_FILE_PATH" ] && shred -u "$SECRET_FILE_PATH";
             gpg "$SECRET_GPG_PATH";
-            tar -C "$SECRET_PARENT" -xzvf "$SECRET_FILE_PATH";
+            tar -C "$SECRET_PARENT" -xvf "$SECRET_FILE_PATH";
             shred -u "$SECRET_FILE_PATH";
             echo "$DONE$DECR";
     esac;
@@ -150,7 +150,7 @@ rsync_data_backup() {
     #   don't want to backup) ~/data/image and ~/data/music (see the
     #   SPECIFIC_EXCLUDE local variable).
     # - For all targets, you want to exclude the item (directory or file)
-    #   output by "secret -n" and the one output by "secret -z" (see the
+    #   output by "secret -n" and the one output by "secret -a" (see the
     #   "--exclude" options in the rsync command and see the "secret" function
     #   above).
     # - Backup destination directory /media/$USER/<target_name>/$USER/data
@@ -176,7 +176,7 @@ rsync_data_backup() {
     local DEST=;
     local SOURCE=;
     local SN="$(secret -n)";
-    local SZ="$(secret -z)";
+    local SA="$(secret -a)";
     local RSYNC=;
     local DATA_DIR="$(data_dir)";
 
@@ -248,7 +248,7 @@ rsync_data_backup() {
 
         $RSYNC \
             --exclude="${SN#"$DATA_DIR"/}" \
-            --exclude="${SZ#"$DATA_DIR"/}" \
+            --exclude="${SA#"$DATA_DIR"/}" \
             "$DATA_DIR" "$DEST";
         freespace "$DEST";
 
@@ -266,9 +266,9 @@ rsync_snapshot() {
     # underscore between "work" and "important_project").
     #
     # An encrypted archive is also created
-    # (~/snapshot/2019-07-26T14.00.40Z_work__important_project.tgz.gpg).
+    # (~/snapshot/2019-07-26T14.00.40Z_work__important_project.tar.gpg).
     # Decrypt with
-    # gpg ~/snapshot/2019-07-26T14.00.40Z_work__important_project.tgz.gpg
+    # gpg ~/snapshot/2019-07-26T14.00.40Z_work__important_project.tar.gpg
     #
     # I you don't want the encrypted archive, add option "--no-gpg" as first
     # argument.
@@ -282,7 +282,7 @@ rsync_snapshot() {
     # - Any directory not in ~/data tree
     #
     # Note also that the directory and file as output by "secret -n" and
-    # "secret -z" are ignored (i.e. not copied).
+    # "secret -a" are ignored (i.e. not copied).
 
     local ERR_PREF="${FUNCNAME[0]}: ";
     local GPG_ARCHIVE=true;
@@ -290,9 +290,9 @@ rsync_snapshot() {
     local SNAP_DIR="$(snapshot_dir)";
     local DIR="$(pwd)";
     local DEST=;
-    local DEST_TGZ=;
+    local DEST_TAR=;
     local SECRET_DIR_PATH="$(secret -n)"/secret/directory; # Adapt to your needs.
-    local SECRET_FILE_PATH="$(secret -z)";
+    local SECRET_FILE_PATH="$(secret -a)";
     local SECRET_DIR_REL_PATH=;
     local SECRET_FILE_REL_PATH=;
     local EXCL=;
@@ -337,10 +337,10 @@ rsync_snapshot() {
     mkdir -p "$DEST";
     rsync -aAXv $EXCL "$DIR"/ "$DEST";
     if [ "$GPG_ARCHIVE" != "false" ]; then
-        DEST_TGZ="$DEST_DIR".tgz;
-        tar -C "$SNAP_DIR" -czvf "$SNAP_DIR/$DEST_TGZ" "$DEST_DIR";
-        gpg -c "$SNAP_DIR/$DEST_TGZ";
-        rm "$SNAP_DIR/$DEST_TGZ";
+        DEST_TAR="$DEST_DIR".tar;
+        tar -C "$SNAP_DIR" -cvf "$SNAP_DIR/$DEST_TAR" "$DEST_DIR";
+        gpg -c "$SNAP_DIR/$DEST_TAR";
+        rm "$SNAP_DIR/$DEST_TAR";
     fi;
 
     freespace "$SNAP_DIR";
