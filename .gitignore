@@ -12,6 +12,9 @@
 !.config/openbox/autostart
 !.config/openbox/rc.xml
 !.config/openbox/menu.xml
+.dlume/*
+!.dlume
+!.dlume/dlume
 .moc/*
 !.moc
 !.moc/config
