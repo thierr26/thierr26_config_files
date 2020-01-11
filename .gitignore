@@ -15,6 +15,9 @@
 .dlume/*
 !.dlume
 !.dlume/dlume
+.gnupg/*
+!.gnupg
+!.gnupg/gpg-agent.conf
 .moc/*
 !.moc
 !.moc/config
