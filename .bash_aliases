@@ -488,3 +488,48 @@ wlscan() {
     done < <(sudo /sbin/iwlist $(wif) scan);
 
 }
+
+ak() {
+
+    # Run akt (Ada Keystore) with the --passcmd option. The command passed via
+    # the --passcmd option is a piped chain of commands involving
+    # gpg-connect-agent. The point is to benefit from the gpg-agent passphrase
+    # caching system.
+    #
+    # The first argument must be an akt command ("list", "store", "extract",
+    # "edit", ...). The only command not allowed here is "create".
+    #
+    # The second argument must be the (relative or absolute) path to a
+    # keystore.
+    #
+    # The other arguments are passed to akt as well.
+
+    local ERR_PREF="${FUNCNAME[0]}: ";
+
+    [ $# -lt 2 ] \
+        && echo "${ERR_PREF}At least two arguments required" \
+                "(keystore path and command)." 1>&2 \
+        && return 1;
+
+    [ "$1" = "create" ] \
+        && echo "${ERR_PREF}\"create\" command not allowed here" \
+                "(use \"akt create ...\" directly)." 1>&2 \
+        && return 1;
+
+    local AKT_COMMAND="$1";
+    local KEYSTORE=$(readlink -f "$2");
+    shift; shift;
+
+    local G_C_A=gpg-connect-agent;
+    local G_P_P_D="GET_PASSPHRASE --data";
+    local ID="AKT+keystore+password+($KEYSTORE)";
+    local ERR=X;
+    local PROMPT=Password
+    local DESCR="Please+enter+keystore+password+($KEYSTORE)";
+    local ECHO_G_C_A_INPUT="echo \"$G_P_P_D $ID $ERR $PROMPT $DESCR\"";
+
+    export GPG_TTY=$(tty);
+    akt "$AKT_COMMAND" "$KEYSTORE" --passcmd \
+        "$ECHO_G_C_A_INPUT|$G_C_A|head -1|sed \"s/^D //\"|tr -d \"\n\"" $@;
+
+}
