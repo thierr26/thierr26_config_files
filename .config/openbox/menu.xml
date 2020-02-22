@@ -100,7 +100,7 @@
 			</item>
 		</menu>
 		<separator/>
-		<item label="_Lock the system">
+		<item label="_Lock the console">
 			<action name="Execute">
 				<execute>physlock</execute>
 			</action>
