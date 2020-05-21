@@ -7,6 +7,7 @@ alias g=git
 alias ggrep='git grep --no-index'
 alias gnat2018="PATH=$HOME/opt/GNAT/2018/bin:$PATH"
 alias gnat2019="PATH=$HOME/opt/GNAT/2019/bin:$PATH"
+alias gnat2020="PATH=$HOME/opt/GNAT/2020/bin:$PATH"
 alias guestinfo='sudo virsh list --all && sudo virsh net-dhcp-leases default'
 alias ifp='sudo ifp'
 alias lla='ls -la'
