@@ -21,6 +21,11 @@
 				<execute>claws-mail</execute>
 			</action>
 		</item>
+		<item label="_Pan">
+			<action name="Execute">
+				<execute>pan</execute>
+			</action>
+		</item>
 		<item label="Sk_ype for Web (in Google Chrome)">
 			<action name="Execute">
 				<execute>google-chrome web.skype.com</execute>
