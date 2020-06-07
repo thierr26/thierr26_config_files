@@ -139,6 +139,9 @@ nnoremap <Leader>a /[^\x00-\x7F]<CR>
 nnoremap <Leader>c :hi! link Comment Ignore<CR>
 nnoremap <Leader>C :hi! link Comment Comment<CR>
 
+" Always display cursor position.
+set ruler
+
 let s:specific_settings_required = 0
 if s:specific_settings_required
     set background=light
