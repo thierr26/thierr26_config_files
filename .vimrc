@@ -1,7 +1,3 @@
-" Activates the Pathogen plugin (package vim-pathogen on Debian).
-silent! call pathogen#infect()
-silent! call pathogen#helptags()
-
 " Enable syntax highlighting.
 syntax enable
 
@@ -142,50 +138,6 @@ nnoremap <Leader>a /[^\x00-\x7F]<CR>
 " Map <Leader>c to comments hidding and <Leader>C to comments showing.
 nnoremap <Leader>c :hi! link Comment Ignore<CR>
 nnoremap <Leader>C :hi! link Comment Comment<CR>
-
-if !has("win16") && !has("win32") && !has("win64") && !has("win32unix")
-            \ && $LANG =~# "\.UTF-8$"
-    " Make guides displayed by the plugin indentLine appear like
-    " thin lines (https://github.com/Yggdroot/indentLine).
-    let g:indentLine_char = '│'
-endif
-
-" Make regular expression mode the default search mode in the Ctrl-P plugin
-" (https://github.com/kien/ctrlp.vim).
-let g:ctrlp_regexp = 1
-
-" Have Ctrl-P plugin scan hidden files and directories.
-let g:ctrlp_show_hidden = 1
-
-if !has("win16") && !has("win32") && !has("win64")
-    " Have Ctrl-P use custom file scanning commands.
-    let g:ctrlp_user_command = {
-    \ 'types': {
-        \ 1: ['default.gpr',
-            \ 'cd %s && find . -type f | grep -v "\.\/\(obj\)\|\(bin\)\|'
-            \ . '\(lcov\)\|\([^\/]*doc[^\/]*\)\|\(.git\)\/"'],
-        \ 2: ['build',
-            \ 'find %s -type f | grep -v "\/\(build\)\|\(.git\)\/"'],
-        \ 3: ['.git',
-            \ 'find %s -type f | grep -v "\/\.git\/"'],
-        \ },
-    \ 'fallback': 'find %s -type f'}
-endif
-
-" Use single leader key instead of double leader key in the EasyMotion plugin
-" (https://github.com/Lokaltog/vim-easymotion).
-let g:EasyMotion_leader_key = '<Leader>'
-
-" Remap <Leader>w to the bidirectional word search function of the EasyMotion
-" plugin.
-map <Leader>w <Plug>(easymotion-bd-w)
-
-" Make the BufExplorer plugin (https://github.com/jlanzarotta/bufexplorer)
-" show relative paths by default.
-let g:bufExplorerShowRelativePath = 1
-
-" Make tcomment work with octave file type.
-call tcomment#type#Define('octave', '# %s')
 
 let s:specific_settings_required = 0
 if s:specific_settings_required
