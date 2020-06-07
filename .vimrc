@@ -61,6 +61,9 @@ set nowrap
 " Prevent the Ruby file type plugin from setting shiftwidth and softtabstop.
 let g:ruby_recommended_style=0
 
+" Set maximum text width.
+set textwidth=79
+
 " Set width of a tabulation character.
 set tabstop=4
 
