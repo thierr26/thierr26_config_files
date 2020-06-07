@@ -118,9 +118,6 @@ set guioptions-=r
 set guioptions-=R
 set guioptions-=b
 
-" Use the whole window height.
-set guiheadroom=0
-
 " Do not use automatic folding.
 set foldmethod=manual
 
