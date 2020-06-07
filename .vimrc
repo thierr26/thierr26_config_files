@@ -58,6 +58,20 @@ set nojoinspaces
 " Don't wrap lines.
 set nowrap
 
+" Set width of a tabulation character.
+set tabstop=4
+
+" Use spaces (not tabulation characters) when tabulation key is hit in insert
+" mode.
+set expandtab
+
+" Set the number of columns the text is shifted on reindent operations (<<,
+" >>).
+set shiftwidth=4
+
+" Set the number of columns used when hitting tabulation in insert mode.
+set softtabstop=4
+
 " Highlight search.
 set hlsearch
 
