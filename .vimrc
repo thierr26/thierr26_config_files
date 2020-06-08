@@ -158,12 +158,3 @@ nnoremap <Leader>C :hi! link Comment Comment<CR>
 
 " Always display cursor position.
 set ruler
-
-let s:specific_settings_required = 0
-if s:specific_settings_required
-    set background=light
-    silent! color moria
-    set ruler
-    set backupcopy=yes
-    set lines=57
-endif
