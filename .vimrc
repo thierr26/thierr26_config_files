@@ -81,6 +81,13 @@ set softtabstop=4
 " Highlight search.
 set hlsearch
 
+" Do case insensitive search...
+set ignorecase
+" ... except when the search pattern contains at least one uppercase character.
+" '\c' or '\C' can still be used in the search pattern to force case
+" insensitive or case sensitive search.
+set smartcase
+
 " Set showcmd option (makes the number of selected characters or lines appear
 " in visual mode).
 set showcmd
