@@ -115,9 +115,6 @@ endif
 " Don't show the tool bar.
 set guioptions-=T
 
-" Don't show the menu.
-set guioptions-=m
-
 " Don't show the scroll bars.
 set guioptions-=l
 set guioptions-=L
