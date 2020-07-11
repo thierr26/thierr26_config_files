@@ -21,6 +21,9 @@
 .moc/*
 !.moc
 !.moc/config
+.pan2/*
+!.pan2
+!.pan2/preferences.xml
 !.procmailrc
 !.profile
 !.Xresources
