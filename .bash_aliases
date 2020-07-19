@@ -149,10 +149,10 @@ rsync_data_backup() {
     # - "--restore": Performs a restoration instead of a backup.
     #
     # The following assumptions are made:
-    # - Possible values for <target_name> are "chil", "ikki", "mang" and
-    #   "mysa".
-    # - In the case of the "chil" target, you want to exclude (that is you
-    #   don't want to backup) ~/data/image and ~/data/music (see the
+    # - Possible values for <target_name> are "chil", "ikki", "mang", "mysa",
+    #   "rama" and "thuu".
+    # - In the case of the "chil" and "rama" tsarget, you want to exclude (that
+    # is you don't want to backup) ~/data/image and ~/data/music (see the
     #   SPECIFIC_EXCLUDE local variable).
     # - For all targets, you want to exclude the item (directory or file)
     #   output by "secret -n" and the one output by "secret -a" (see the
@@ -224,9 +224,9 @@ rsync_data_backup() {
     TARGET="$1";
 
     case "$TARGET" in
-        ikki | mang | mysa)
+        ikki | mang | mysa | thuu)
             ;;
-        chil)
+        chil | rama)
             SPECIFIC_EXCLUDE="--exclude=image --exclude=music";
             ;;
         *)
