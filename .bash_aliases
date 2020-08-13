@@ -1,7 +1,7 @@
 alias am=alsamixer
 alias clear_gpg_agent='gpg-connect-agent reloadagent /bye'
 alias ds='du -sBM'
-alias e='vi -O'
+alias e='vim -O'
 alias fm='fetchmail --mda "procmail -f %F" && inc'
 alias g=git
 alias ggrep='git grep --no-index'
