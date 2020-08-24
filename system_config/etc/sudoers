@@ -30,8 +30,10 @@ root	ALL=(ALL:ALL) ALL
                       /usr/sbin/dhclient, \
                       /sbin/iwlist * scan
 
-# Allow any user to execute /usr/bin/ifp and /usr/bin/virsh without password
-ALL	ALL=(ALL:ALL) NOPASSWD: /usr/bin/ifp, /usr/bin/virsh
+# Allow any user to execute /usr/bin/ifp without password
+ALL	ALL=(ALL:ALL) NOPASSWD: /usr/bin/ifp, \
+                                /usr/bin/virsh, \
+                                /usr/sbin/openconnect
 
 # See sudoers(5) for more information on "#include" directives:
 
