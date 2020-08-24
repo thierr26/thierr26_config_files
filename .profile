@@ -26,4 +26,6 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
-PATH="$PATH":/usr/bin/mh
+if [ -d /usr/bin/mh ] ; then
+    PATH="$PATH":/usr/bin/mh
+fi
