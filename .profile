@@ -29,3 +29,9 @@ fi
 if [ -d /usr/bin/mh ] ; then
     PATH="$PATH":/usr/bin/mh
 fi
+
+if [ -d /usr/local/opt/gnat-19.2-x86_64/bin ] ; then
+    PATH="$PATH":/usr/local/opt/gnat-19.2-x86_64/bin
+    export COMPILER_PATH="/usr/libexec/gcc/x86_64-redhat-linux/4.8.2:\
+/usr/local/opt/gnat-19.2-x86_64/libexec/gcc/x86_64-pc-linux-gnu/7.3.1"
+fi
