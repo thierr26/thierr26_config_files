@@ -150,6 +150,9 @@ if filereadable(expand("~/.vimrc_background"))
   source ~/.vimrc_background
 endif
 
+" Remap ESC to "kj" in insert mode.
+inoremap kj <ESC>
+
 " Make "," the "leader" key (instead of the backslash).
 let mapleader = ","
 
