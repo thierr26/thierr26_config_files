@@ -28,12 +28,13 @@ root	ALL=(ALL:ALL) ALL
                       /usr/bin/systemctl start networking, \
                       /usr/bin/systemctl restart networking, \
                       /usr/sbin/dhclient, \
-                      /sbin/iwlist * scan
+                      /sbin/iwlist * scan, \
+                      /usr/sbin/openconnect, \
+                      /usr/sbin/ifup
 
 # Allow any user to execute /usr/bin/ifp without password
 ALL	ALL=(ALL:ALL) NOPASSWD: /usr/bin/ifp, \
-                                /usr/bin/virsh, \
-                                /usr/sbin/openconnect
+                                /usr/bin/virsh
 
 # See sudoers(5) for more information on "#include" directives:
 
