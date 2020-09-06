@@ -146,8 +146,8 @@ set exrc
 
 " Use base16 (see https://ddrscott.github.io/blog/2017/base16-shell).
 if filereadable(expand("~/.vimrc_background"))
-  let base16colorspace=256
-  source ~/.vimrc_background
+    let base16colorspace=256
+    source ~/.vimrc_background
 endif
 
 " Remap ESC to "kj" in insert mode.
@@ -165,3 +165,6 @@ nnoremap <Leader>C :hi! link Comment Comment<CR>
 
 " Always display cursor position.
 set ruler
+
+" Set options for Diapp plugin.
+let g:diapp_gprbuild_comm_msg = 0
