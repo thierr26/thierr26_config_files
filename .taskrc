@@ -34,3 +34,6 @@ report.app_w.filter=+appointment (status:pending or status:waiting) due.before:1
 report.app_w.sort=due
 report.app_w.labels=ID,Tags,Due,Description
 dateformat=Y-M-DTH:N:S
+
+# Text width used when output is piped
+defaultwidth=160
