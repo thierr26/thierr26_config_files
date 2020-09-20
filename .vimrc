@@ -168,3 +168,4 @@ set ruler
 
 " Set options for Diapp plugin.
 let g:diapp_gprbuild_comm_msg = 0
+let g:diapp_gprbuild_hide_qf_on_successful_rerun = 1
