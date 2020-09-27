@@ -58,7 +58,20 @@ fi
 
 if [ "$color_prompt" = yes ]; then
     # PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-    PS1='\[\033[00;36m\]\u\[\033[00m\]:\[\033[00;33m\]\w\[\033[00m\]\$ '
+    if [ -n "$SSH_TTY" ]; then
+        in_ssh_session=yes
+    else
+        who_m_tty=$(who -m|sed "s/^[^ ]\+ \+\([^ ]\+\) .*/ \1 /")
+        w|grep -q " $who_m_tty .* sshd: " && in_ssh_session=yes
+        unset who_m_tty
+    fi
+    if [ -n "$in_ssh_session" ]; then
+        ps1_host_part='@\[\033[47m\]\[\033[01;32m\]\h\[\033[00m\]'
+    else
+        ps1_host_part=
+    fi
+    PS1="\[\033[36m\]\u\[\033[00m\]$ps1_host_part:\[\033[33m\]\w\[\033[00m\]\$ "
+    unset ps1_host_part
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -119,5 +132,7 @@ stty -ixon
 
 BASE16_SHELL=$HOME/.config/base16-shell/
 [ -n "$PS1" ] \
+    && [ -z $in_ssh_session ] \
     && [ -s $BASE16_SHELL/profile_helper.sh ] \
     && eval "$($BASE16_SHELL/profile_helper.sh)"
+unset in_ssh_session
