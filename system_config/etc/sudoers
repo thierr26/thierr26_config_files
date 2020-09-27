@@ -30,7 +30,8 @@ root	ALL=(ALL:ALL) ALL
                       /usr/sbin/dhclient, \
                       /sbin/iwlist * scan, \
                       /usr/sbin/openconnect, \
-                      /usr/sbin/ifup
+                      /usr/sbin/ifup, \
+                      /usr/bin/nmap
 
 # Allow any user to execute /usr/bin/ifp without password
 ALL	ALL=(ALL:ALL) NOPASSWD: /usr/bin/ifp, \
