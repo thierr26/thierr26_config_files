@@ -172,6 +172,11 @@ rsync_data_backup() {
     # /media/$USER/<target_name>/$USER.
     # (see
     # qdosmsq.dunbar-it.co.uk/blog/2013/02/rsync-to-slash-or-not-to-slash).
+    #
+    # One last note to mention that the function creates or modifies a file
+    # named rsync_data_backup_runs in ~/data (only if none of he options are
+    # used). The modification is to append a line indicating the UTC date, the
+    # hostname and the backup target.
 
     local ERR_PREF="${FUNCNAME[0]}: ";
     local U="$USER";
@@ -253,6 +258,11 @@ rsync_data_backup() {
         [ ! -d "$DEST" ] \
             && echo "${ERR_PREF}Destination directory not found: $DEST." 1>&2 \
             && return 1;
+
+        if [ -z "$DRYRUN_OPT" ]; then
+            echo $(timestamp) $(hostname) "->" "$TARGET" \
+                >> "$DATA_DIR/"${FUNCNAME[0]}_runs;
+        fi;
 
         $RSYNC \
             --exclude="${SN#"$DATA_DIR"/}" \
