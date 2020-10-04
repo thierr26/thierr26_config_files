@@ -192,6 +192,25 @@ freespace() {
         "($(df --output=pcent "$F" | tail -n 1|sed "s/^ *\(.\+\)/\1/") used)";
 }
 
+secret_tar() {
+
+    # Archive (using tar) the directory provided as argument and pipe the
+    # output to gpg for symmetric encryption. The original directory is then
+    # destroyed.
+
+    tar -cvf - "$1"|gpg -c > "${1%/}".tar.gpg \
+        && find "$1" -type f -exec shred {} \; \
+        && rm -rf "$1";
+}
+
+secret_untar() {
+
+    # Decrypt (using 'gpg -d') the .tar.gpg file provided as argument and pipe
+    # the output to tar for archive extraction.
+
+    gpg -d "$1"|tar -xvf -;
+}
+
 secret() {
 
     # Handle "secret" directory. Exactly one argument required (the option).
