@@ -28,6 +28,36 @@ alias vi='vi -u NONE'
 alias vim.tiny='vi -u NONE'
 alias x=startx
 
+config_clean_filters() {
+
+    # Configure the clean filters for the Git repository. Nothing is done if
+    # the current directory is not part of a Git repository and if any of the
+    # following files is absent of the repository top level directory:
+    # '.gitconfig', '.procmailrc' and '.bash_aliases'.
+    #
+    # 'git ls-files' is used to check the presence of the files (combined with
+    # 'git rev-parse --show-toplevel').
+
+    # Top level directory of the repository.
+    local TOP=$(git rev-parse --show-toplevel 2>/dev/null);
+
+    if [ -n "$TOP" ] \
+            && [ $(git ls-files "$TOP"/.gitconfig|wc -l) == 1 ] \
+            && [ $(git ls-files "$TOP"/.procmailrc|wc -l) == 1 ] \
+            && [ $(git ls-files "$TOP"/.bash_aliases|wc -l) == 1 ]; then
+
+        git config --local filter.hide_git_name_and_email.clean \
+            'clean_filters/hide_git_name_and_email %f'
+        git config --local filter.hide_mail_dir.clean \
+            'clean_filters/hide_mail_dir %f'
+        git config --local filter.hide_secret_dir.clean \
+            'clean_filters/hide_secret_dir %f'
+
+    else
+        echo Not in a proper directory to do that 1>&2;
+    fi;
+}
+
 data_dir() {
     echo ~/data;
 }

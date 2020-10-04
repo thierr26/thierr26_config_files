@@ -1,8 +1,0 @@
-#!/bin/sh
-
-g config --local filter.hide_git_name_and_email.clean \
-    'clean_filters/hide_git_name_and_email %f'
-g config --local filter.hide_mail_dir.clean \
-    'clean_filters/hide_mail_dir %f'
-g config --local filter.hide_secret_dir.clean \
-    'clean_filters/hide_secret_dir %f'
