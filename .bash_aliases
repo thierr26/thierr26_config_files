@@ -200,7 +200,7 @@ secret() {
     # Option "-a": Output path to secret directory archive (.tar file) (which
     #              does probably not exist, used as temporary file).
     # Option "-p": Output path to encrypted secret directory archive (.tar.gpg
-    #              file) (which should exist).
+    #              file).
     # Option "-e": Encrypt secret directory.
     # Option "-d": Decrypt secret directory (keeps encrypted file).
 
