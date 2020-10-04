@@ -78,6 +78,94 @@ display_positions() {
     fi;
 }
 
+ip_addr() {
+
+    # IP address of local host.
+
+    ip addr | grep "^\s*inet\s" | grep -v 127.0.0.1 \
+        | sed "s/^\s*inet\s\+\(\([0-9]\+\.\)\{3\}[0-9]\+\).*/\1/";
+
+}
+
+host_name() {
+
+    # Output the host name for the IP address provided as argument, based on
+    # '/etc/hosts'. If no argument is provided or if the provided argument
+    # equals the output of the 'ip_addr' function, then the output of command
+    # 'hostname' is output.
+
+    if [ $# -eq 0 ] || [ "$1" == "$(ip_addr)" ]; then
+
+        hostname;
+
+    else
+
+        local L=$(grep "^\s*$1\s" /etc/hosts|tail -1);
+        if [ -n "$L" ]; then
+            echo "$L"|sed "s/^.\+\s\([^ ]\+\)\s*$/\1/";
+        fi;
+
+    fi;
+
+}
+
+nscan() {
+
+    # Issue a 'sudo nmap -sP -n' command and filter the output (one line per
+    # host, with IP address, letency (if available) and MAC address . The target
+    # specification provided to nmap is "192.168.0.0/24" unless one or more
+    # arguments are provided on the command line. In this case, the command
+    # line argument(s) are provided to nmap as target specification(s).
+
+    local TARGET=192.168.0.0/24;
+    if [ $# -gt 0 ]; then
+        TARGET="$1";
+        shift;
+    fi;
+
+    # IP address of local host.
+    local SELF_IP=$(ip_addr);
+
+    local IP=;
+    local OUTPUT_LINE=;
+    while IFS= read -r LINE; do
+
+        if [ "$(echo "$LINE"|grep -c \
+                '^Nmap scan report for \([0-9]\+\.\)\{3\}[0-9]\+' \
+                )" -gt 0 ]; then
+
+            if [ -n "$OUTPUT_LINE" ]; then
+                echo "$OUTPUT_LINE";
+            fi;
+
+            IP=$(echo "$LINE"|sed "s/^.\+ //");
+
+        elif [ "$(echo "$LINE"|grep -c '^Host is up (')" -gt 0 ]; then
+
+            OUTPUT_LINE=$(echo "$LINE"|sed "s/^.\+(/$IP, /"|sed "s/).\+$//");
+
+        elif [ "$(echo "$LINE"|grep -c '^Host is up\.')" -gt 0 ]; then
+
+            if [ "$IP" == "$SELF_IP" ]; then
+                OUTPUT_LINE="$IP, local host";
+            else
+                OUTPUT_LINE=$(echo "$LINE" \
+                    | sed "s/^.\+(/$IP, /"|sed "s/).\+$//" \
+                    | sed "s/).*$//");
+            fi;
+
+        elif [ "$(echo "$LINE"|grep -c '^MAC Address: ')" -gt 0 ]; then
+
+            OUTPUT_LINE="$OUTPUT_LINE, $LINE";
+
+        fi;
+
+    done < <(sudo nmap -sP -n $TARGET $*);
+
+    echo "$OUTPUT_LINE";
+
+}
+
 data_dir() {
     echo ~/data;
 }
