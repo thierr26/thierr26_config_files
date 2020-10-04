@@ -1,5 +1,8 @@
 alias am=alsamixer
 alias clear_gpg_agent='gpg-connect-agent reloadagent /bye'
+C=connected;
+alias displays="xrandr|grep '^[A-Z][^ ]\+ \+$C '|sed 's/ \+$C .*$//'"
+unset C;
 alias ds='du -sBM'
 alias e='vim -O'
 alias fm='fetchmail --mda "procmail -f %F" && inc'
@@ -55,6 +58,23 @@ config_clean_filters() {
 
     else
         echo Not in a proper directory to do that 1>&2;
+    fi;
+}
+
+display_positions() {
+
+    # Issue a 'xrandr --auto' command followed by a
+    # 'xrandr --output <first argument> --left-of <second argument>' command,
+    # unless the first argument is "LVDS-1" or "DVI-1". In this case, the
+    # second command is
+    # 'xrandr --output <second argument> --right-of <first argument>'.
+
+    xrandr --auto;
+
+    if [ "$1" == "LVDS-1" ] || [ "$1" == "DVI-1" ]; then
+        xrandr --output "$2" --right-of "$1";
+    else
+        xrandr --output "$1" --left-of "$2";
     fi;
 }
 
