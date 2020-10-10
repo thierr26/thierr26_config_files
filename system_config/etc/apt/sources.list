@@ -4,15 +4,15 @@
 
 #deb cdrom:[Debian GNU/Linux 10.0.0 _Buster_ - Official amd64 NETINST 20190706-10:23]/ buster main
 
-deb http://ftp.fr.debian.org/debian/ buster main non-free contrib
-deb-src http://ftp.fr.debian.org/debian/ buster main non-free contrib
+deb http://debian.apt-mirror.de/debian/ buster main non-free contrib
+deb-src http://debian.apt-mirror.de/debian/ buster main non-free contrib
 
 deb http://security.debian.org/debian-security buster/updates main non-free contrib
 deb-src http://security.debian.org/debian-security buster/updates main non-free contrib
 
 # buster-updates, previously known as 'volatile'
-deb http://ftp.fr.debian.org/debian/ buster-updates main non-free contrib
-deb-src http://ftp.fr.debian.org/debian/ buster-updates main non-free contrib
+deb http://debian.apt-mirror.de/debian/ buster-updates main non-free contrib
+deb-src http://debian.apt-mirror.de/debian/ buster-updates main non-free contrib
 
 # This system was installed using small removable media
 # (e.g. netinst, live or single CD). The matching "deb cdrom"
