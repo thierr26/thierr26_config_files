@@ -444,7 +444,8 @@ rsync_data_backup() {
 rsync_snapshot() {
 
     # Copy the content of a directory provided as argument to a subdirectory of
-    # the ~/snapshot directory using rsync.
+    # the ~/snapshot directory using rsync. Providing no directory is
+    # equivalent to providing the current working directory.
     #
     # For example, the content of directory ~/data/work/important_project would
     # be copied to a directory named like
@@ -458,6 +459,12 @@ rsync_snapshot() {
     #
     # I you don't want the encrypted archive, add option "--no-gpg" as first
     # argument.
+    #
+    # You can also provide additional rsync options before the directory
+    # argument (if any) and after the "--no-gpg" option (if any). Example:
+    #
+    # rsync_snapshot \
+    #     --no-gpg --exclude=unwanted_subdir ~/data/work/important_project
     #
     # Note the function won't attempt the directory copy if that directory is
     # one of:
@@ -483,11 +490,17 @@ rsync_snapshot() {
     local SECRET_FILE_REL_PATH=;
     local EXCL=;
     local WONTATTEMPT="Won't attempt to snapshot";
+    local USER_RSYNC_OPT=;
 
     if [ "$1" = --no-gpg ]; then
         GPG_ARCHIVE=false;
         shift;
     fi;
+
+    while [ $# -gt 0 ] && [ "$(echo "$1"|grep -c "^--")" -gt 0 ]; do
+        USER_RSYNC_OPT="$USER_RSYNC_OPT $1";
+        shift;
+    done;
 
     [ $# -gt 1 ] \
         && echo "${ERR_PREF}Too many arguments." 1>&2 \
@@ -521,7 +534,7 @@ rsync_snapshot() {
     fi;
 
     mkdir -p "$DEST";
-    rsync -aAXv $EXCL "$DIR"/ "$DEST";
+    rsync -aAXv $EXCL $USER_RSYNC_OPT "$DIR"/ "$DEST";
     if [ "$GPG_ARCHIVE" != "false" ]; then
         DEST_TAR="$DEST_DIR".tar;
         tar -C "$SNAP_DIR" -cvf "$SNAP_DIR/$DEST_TAR" "$DEST_DIR";
