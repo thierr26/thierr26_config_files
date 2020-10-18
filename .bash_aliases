@@ -61,6 +61,17 @@ config_clean_filters() {
     fi;
 }
 
+cpu() {
+
+    # Show CPU Mhz (obtained via a 'lscpu|grep "^CPU MHz: "' command) and
+    # individual core loads (obtained via the 'top' program).
+
+    local REGEX="^CPU MHz: \+";
+    lscpu|grep "$REGEX"|sed "s/$REGEX\([^\s]\+\)/Running at \1 MHz/";
+    local REGEX="^%Cpu[0-9]\s*:";
+    top -b -n1 -1|grep "$REGEX"|sed "s/$REGEX//"
+}
+
 display_positions() {
 
     # Issue a 'xrandr --auto' command followed by a
