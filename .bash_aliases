@@ -209,7 +209,7 @@ secret_tar() {
     # output to gpg for symmetric encryption. The original directory is then
     # destroyed.
 
-    tar -cvf - "$1"|gpg -c > "${1%/}".tar.gpg \
+    tar -cvf - "$1"|gpg -e > "${1%/}".tar.gpg \
         && find "$1" -type f -exec shred {} \; \
         && rm -rf "$1";
 }
@@ -281,7 +281,7 @@ secret() {
             [ -f "$SECRET_FILE_PATH" ] && shred -u "$SECRET_FILE_PATH";
             tar -C "$SECRET_PARENT" -cvf \
                 "$SECRET_FILE_PATH" "${SECRET_DIR_PATH##*/}";
-            gpg -c "$SECRET_FILE_PATH";
+            gpg -e "$SECRET_FILE_PATH";
             shred -u "$SECRET_FILE_PATH";
             find "$SECRET_DIR_PATH" -type f -exec shred {} \;
             rm -rf "$SECRET_DIR_PATH";
@@ -538,7 +538,7 @@ rsync_snapshot() {
     if [ "$GPG_ARCHIVE" != "false" ]; then
         DEST_TAR="$DEST_DIR".tar;
         tar -C "$SNAP_DIR" -cvf "$SNAP_DIR/$DEST_TAR" "$DEST_DIR";
-        gpg -c "$SNAP_DIR/$DEST_TAR";
+        gpg -e "$SNAP_DIR/$DEST_TAR";
         rm "$SNAP_DIR/$DEST_TAR";
     fi;
 
