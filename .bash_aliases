@@ -8,9 +8,9 @@ alias e='vim -O'
 alias fm='fetchmail --mda "procmail -f %F" && inc'
 alias g=git
 alias ggrep='git grep --no-index'
-alias gnat2018="PATH=$HOME/opt/GNAT/2018/bin:$PATH"
-alias gnat2019="PATH=$HOME/opt/GNAT/2019/bin:$PATH"
-alias gnat2020="PATH=$HOME/opt/GNAT/2020/bin:$PATH"
+alias gnat2018="PATH=/opt/GNAT/2018/bin:$PATH"
+alias gnat2019="PATH=/opt/GNAT/2019/bin:$PATH"
+alias gnat2020="PATH=/opt/GNAT/2020/bin:$PATH"
 alias gquit=gnome-session-quit
 alias guestinfo='sudo virsh list --all && sudo virsh net-dhcp-leases default'
 alias ifp='sudo ifp'
