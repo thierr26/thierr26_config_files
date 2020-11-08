@@ -103,8 +103,11 @@ set incsearch
 
 " Make tabs, trailing spaces and end of lines show up and make a '+' show up
 " in the last column of the screen if the line is longer than the window width.
-set listchars=tab:>-,trail:-,eol:$,extends:+
+set listchars=tab:>-,trail:-,eol:$,extends:+,precedes:+
 set list
+
+" Toggle list mode.
+nnoremap <C-L> :set list!<CR>
 
 if !has("win16") && !has("win32") && !has("win64") && !has("win32unix")
             \ && $LANG =~# "\.UTF-8$"
