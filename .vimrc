@@ -144,9 +144,6 @@ endif
 " Do auto-indentation.
 set autoindent
 
-" Source .vimrc in the current directory.
-set exrc
-
 " Use base16 (see https://ddrscott.github.io/blog/2017/base16-shell).
 if filereadable(expand("~/.vimrc_background"))
     let base16colorspace=256
