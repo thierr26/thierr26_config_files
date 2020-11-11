@@ -17,6 +17,15 @@ alias ifp='sudo ifp'
 alias lla='ls -la'
 alias m=make
 alias mute='amixer -q -c 0 sset Master playback mute'
+alias nflow='wget -q -O - http://mafreebox.freebox.fr/pub/fbx_info.txt \
+    | grep -a "^\s*WAN\|Ethernet\|USB\|Switch " \
+    | grep -v " Non connect" \
+    | sed -e "s/^\s*\([^ ]\+\) \+[^ ]\+ \+\([0-9.]\+ \)/\1 \2/" \
+          -e "s/^WAN/WAN      in /" \
+          -e "s/^Ethernet/Ethernet in /" \
+          -e "s/^USB/USB      in /" \
+          -e "s/^Switch/Switch   in /" \
+          -e "s/\/s\( \+\)\([0-9]\)/\1out \2/"'
 alias noise='aplay /usr/share/sounds/alsa/Noise.wav'
 alias no_power_save='xset s off && xset -dpms'
 alias oc='octave --quiet'
