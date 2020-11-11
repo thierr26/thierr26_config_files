@@ -305,6 +305,34 @@ secret() {
     esac;
 }
 
+secret_dump() {
+
+    # Dump a file of encrypted secret directory archive. Exactly one argument
+    # required (the path to the file in the archive, with some leading
+    # directories possibly removed).
+
+    [ $# -ne 1 ] \
+        && echo "${ERR_PREF}Exactly one argument required." 1>&2 \
+        && return 1;
+
+    local STR=" found in secret directory archive.";
+    local DECRYPT_CMD="gpg -d $(secret -p)";
+
+    local FILE_MATCH_COUNT=$($DECRYPT_CMD 2>/dev/null \
+        | tar -tf - | grep -c "\/$1$");
+
+    [ "$FILE_MATCH_COUNT" -eq 0 ] \
+        && echo "No matching file$STR" 1>&2 \
+        && return 1;
+
+    [ "$FILE_MATCH_COUNT" -gt 1 ] \
+        && echo "Multiple matching files$STR" 1>&2 \
+        && return 1;
+
+    $DECRYPT_CMD 2>/dev/null | tar -xOf - \
+        $($DECRYPT_CMD 2>/dev/null | tar -tf - | grep "\/$1$");
+}
+
 rsync_data_backup() {
 
     # Backup ~/data to /media/$USER/<target_name>/$USER (or restore
