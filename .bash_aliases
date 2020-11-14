@@ -7,6 +7,8 @@ alias ds='du -sBM'
 alias e='vim -O'
 alias fm='fetchmail --mda "procmail -f %F" && inc'
 alias g=git
+alias gb=gprbuild
+alias gc='gprclean -q'
 alias ggrep='git grep --no-index'
 alias gnat2018="PATH=/opt/GNAT/2018/bin:$PATH"
 alias gnat2019="PATH=/opt/GNAT/2019/bin:$PATH"

@@ -35,3 +35,10 @@ if [ -d /usr/local/opt/gnat-19.2-x86_64/bin ] ; then
     export COMPILER_PATH="/usr/libexec/gcc/x86_64-redhat-linux/4.8.2:\
 /usr/local/opt/gnat-19.2-x86_64/libexec/gcc/x86_64-pc-linux-gnu/7.3.1"
 fi
+
+if [ -d ~/data/dvlpt/ada/ompacc/shared_gnat_project ] ; then
+    if echo "$GPR_PROJECT_PATH"|grep -v -q "ompacc\/shared_gnat_project" ; then
+        export GPR_PROJECT_PATH=\
+~/data/dvlpt/ada/ompacc/shared_gnat_project:"$GPR_PROJECT_PATH"
+    fi
+fi
