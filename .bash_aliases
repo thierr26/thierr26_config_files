@@ -16,6 +16,7 @@ alias gnat2020="PATH=/opt/GNAT/2020/bin:$PATH"
 alias gquit=gnome-session-quit
 alias guestinfo='sudo virsh list --all && sudo virsh net-dhcp-leases default'
 alias ifp='sudo ifp'
+alias list_installed_packages='dpkg-query -f '\''${binary:Package}\n'\'' -W'
 alias lla='ls -la'
 alias m=make
 alias mute='amixer -q -c 0 sset Master playback mute'
