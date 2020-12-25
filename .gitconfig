@@ -22,6 +22,6 @@
 	                echo \"Empty argument, nothing done\"; \
 	            fi; #"
 [credential]
-	helper = store
+	helper = cache --timeout 14400
 [core]
 	editor = vim
