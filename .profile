@@ -39,6 +39,8 @@ fi
 if [ -d ~/data/dvlpt/ada/ompacc/shared_gnat_project ] ; then
     if echo "$GPR_PROJECT_PATH"|grep -v -q "ompacc\/shared_gnat_project" ; then
         export GPR_PROJECT_PATH=\
-~/data/dvlpt/ada/ompacc/shared_gnat_project:"$GPR_PROJECT_PATH"
+~/data/dvlpt/ada/ompacc/shared_gnat_project:\
+~/data/dvlpt/ada/ompacc/gnat_projects:\
+"$GPR_PROJECT_PATH"
     fi
 fi
