@@ -9,6 +9,18 @@ alias fm='fetchmail --mda "procmail -f %F" && inc'
 alias g=git
 alias gb=gprbuild
 alias gc='gprclean -q'
+alias gen_cov_html_report='[ ${PWD##*/} == "src" ] \
+    && mkdir -p ../lcov \
+    && lcov -c \
+        -d ../gnat_build/src-coverage-obj/ -o ../lcov/report_full.info \
+        -t $(basename $(readlink -f $(pwd)/..)) \
+    && lcov \
+        -r ../lcov/report_full.info '*/adainclude/*' '*/src-coverage-obj/*' \
+        -o ../lcov/report.info \
+        -t $(basename $(readlink -f $(pwd)/..)) \
+    && mkdir -p ../lcov/html \
+    && genhtml ../lcov/report.info -o ../lcov/html \
+        -t $(basename $(readlink -f $(pwd)/..))'
 alias ggrep='git grep --no-index'
 alias gnat2018="PATH=/opt/GNAT/2018/bin:$PATH"
 alias gnat2019="PATH=/opt/GNAT/2019/bin:$PATH"
