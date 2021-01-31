@@ -9,18 +9,48 @@ alias fm='fetchmail --mda "procmail -f %F" && inc'
 alias g=git
 alias gb=gprbuild
 alias gc='gprclean -q'
+alias gen_cov_html_cum_report='[ ${PWD##*/} == "src" ] \
+    && rm -rf ../lcov_cum \
+    && mkdir ../lcov_cum \
+    && gprclean -q -r -P default.gpr -XOMPACC_BUILD_MODE=coverage \
+    && gprbuild -p -P default.gpr -XOMPACC_BUILD_MODE=coverage \
+    && lcov -c \
+        -i -d ../gnat_build/src-coverage-obj/ \
+        -o ../lcov_cum/cum_report_prerun.info \
+        -t cum_$(basename $(readlink -f $(pwd)/..)) \
+    && run-parts ../gnat_build/src-coverage-bin \
+    && lcov -c \
+        -d ../gnat_build/src-coverage-obj/ \
+        -o ../lcov_cum/cum_report_postrun.info \
+        -t cum_$(basename $(readlink -f $(pwd)/..)) \
+    && lcov \
+        -a ../lcov_cum/cum_report_prerun.info \
+        -a ../lcov_cum/cum_report_postrun.info \
+        -o ../lcov_cum/cum_report_full.info \
+        -t cum_$(basename $(readlink -f $(pwd)/..)) \
+    && lcov \
+        -r ../lcov_cum/cum_report_full.info '*/adainclude/*' '*/src-coverage-obj/*' \
+        -o ../lcov_cum/cum_report.info \
+        -t cum_$(basename $(readlink -f $(pwd)/..)) \
+    && mkdir -p ../lcov_cum/html \
+    && genhtml ../lcov_cum/cum_report.info -o ../lcov_cum/html \
+        -t cum_$(basename $(readlink -f $(pwd)/..))'
 alias gen_cov_html_report='[ ${PWD##*/} == "src" ] \
-    && mkdir -p ../lcov \
+    && rm -rf ../lcov \
+    && mkdir ../lcov \
+    && gprclean -q -r -P default.gpr -XOMPACC_BUILD_MODE=coverage \
+    && gprbuild -p -P $(ls *_test.gpr) -XOMPACC_BUILD_MODE=coverage \
+    && ../gnat_build/src-coverage-bin/harness \
     && lcov -c \
         -d ../gnat_build/src-coverage-obj/ -o ../lcov/report_full.info \
-        -t $(basename $(readlink -f $(pwd)/..)) \
+        -t $(basename $(readlink -f $(pwd)/..))_test \
     && lcov \
         -r ../lcov/report_full.info '*/adainclude/*' '*/src-coverage-obj/*' \
         -o ../lcov/report.info \
-        -t $(basename $(readlink -f $(pwd)/..)) \
+        -t $(basename $(readlink -f $(pwd)/..))_test \
     && mkdir -p ../lcov/html \
     && genhtml ../lcov/report.info -o ../lcov/html \
-        -t $(basename $(readlink -f $(pwd)/..))'
+        -t $(basename $(readlink -f $(pwd)/..))_test'
 alias ggrep='git grep --no-index'
 alias gnat2018="PATH=/opt/GNAT/2018/bin:$PATH"
 alias gnat2019="PATH=/opt/GNAT/2019/bin:$PATH"
