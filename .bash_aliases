@@ -764,7 +764,7 @@ wlscan() {
             QUAL_SEEN=false;
         fi;
 
-    done < <(sudo /sbin/iwlist $(wif) scan);
+    done < <(sudo /sbin/iwlist "$(wif)" scan 2>/dev/null);
 
 }
 
