@@ -628,6 +628,13 @@ rsync_snapshot() {
     freespace "$SNAP_DIR";
 }
 
+rsync_host() {
+
+    # Synchronize ~/data on host provided as argument.
+
+    rsync -aAXv --delete $(data_dir)/ "$1":$(data_dir);
+}
+
 gcal_moon_sun() {
 
     # Writes ~/gcal Gcal resource file (if it does not already exist) and runs
