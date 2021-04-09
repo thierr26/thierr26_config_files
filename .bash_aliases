@@ -178,7 +178,7 @@ host_name() {
 nscan() {
 
     # Issue a 'sudo nmap -sP -n' command and filter the output (one line per
-    # host, with IP address, letency (if available) and MAC address . The
+    # host, with IP address, latency (if available) and MAC address). The
     # target specification provided to nmap is "192.168.0.0/24" unless one or
     # more arguments are provided on the command line. In this case, the
     # command line argument(s) are provided to nmap as target specification(s).
