@@ -388,6 +388,36 @@ secret_dump() {
         $($DECRYPT_CMD 2>/dev/null | tar -tf - | grep "\/$1$");
 }
 
+backup_dot_gnupg() {
+
+    # Backup ~/.gnupg.
+
+    local TARGET=~/data/office/gpg/gpg.tar.gpg;
+    local TARGET_DIR=${TARGET%/*};
+    local BACKUP_SUBDIR="$TARGET_DIR/backup_$(timestamp)";
+    local TARGET_NAME=${TARGET%.tar.gpg};
+    local SOURCE=~/.gnupg;
+    local SOURCE_COPY_NAME=$(echo "$SOURCE" \
+        |sed "s/^.\+\/\.\([^\/]\+\)$/dot_\1/");
+
+    [ -f "$TARGET" ] \
+        && mkdir "$BACKUP_SUBDIR" \
+        && mv "$TARGET" "$BACKUP_SUBDIR";
+
+    mkdir "$TARGET_NAME";
+    cp -R ~/.gnupg "$TARGET_NAME/$SOURCE_COPY_NAME";
+
+    gpg --armor --export --output "$TARGET_NAME"/pubkeys.asc
+    gpg --armor --export-secret-keys --output "$TARGET_NAME"/privkeys.asc
+
+    TARGET_NAME="${TARGET_NAME##*/}";
+    tar -C "$TARGET_DIR" -cvf "$TARGET_DIR/$TARGET_NAME".tar "$TARGET_NAME";
+    gpg -c "$TARGET_DIR/$TARGET_NAME".tar;
+    shred -u "$TARGET_DIR/$TARGET_NAME".tar;
+    find "$TARGET_DIR/$TARGET_NAME" -type f -exec shred {} \;
+    rm -rf "$TARGET_DIR/$TARGET_NAME";
+}
+
 rsync_data_backup() {
 
     # Backup ~/data to /media/$USER/<target_name>/$USER (or restore
