@@ -849,3 +849,24 @@ ak() {
         "$ECHO_G_C_A_INPUT|$G_C_A|head -1|sed \"s/^D //\"|tr -d \"\n\"" $@;
 
 }
+
+vpn() {
+
+    # Connect to a VPN using OpenConnect. First argument is mandatory and is
+    # the VPN server URL. Second argument is optional and is the VPN protocol
+    # (defaults to "gp" (means "Palo Alto Networks GlobalProtect")).
+
+    local VPN_SERVER="$1";
+    local VPN_PROTOCOL="${2:-gp}";
+
+    sudo openconnect "$VPN_SERVER";
+    sudo openconnect --protocol="$VPN_PROTOCOL" "$VPN_SERVER";
+}
+
+rdp() {
+
+    # Launch 'xfreerdp'. First argument is the user name. Second argument is
+    # the remote machine URL.
+
+    xfreerdp +glyph-cache /relax-order-checks /u:"$1" /v:"$2" /kbd:0x40c /f;
+}
