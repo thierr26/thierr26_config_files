@@ -62,7 +62,8 @@ if [ "$color_prompt" = yes ]; then
         in_ssh_session=yes
     else
         who_m_tty=$(who -m|sed "s/^[^ ]\+ \+\([^ ]\+\) .*/ \1 /")
-        w|grep -q " $who_m_tty .* sshd: " && in_ssh_session=yes
+        w|grep -v " grep \+$who_m_tty "|grep -q " $who_m_tty .* sshd: " \
+            && in_ssh_session=yes
         unset who_m_tty
     fi
     if [ -n "$in_ssh_session" ]; then
