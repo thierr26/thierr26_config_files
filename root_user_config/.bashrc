@@ -7,9 +7,11 @@
 if [ -n "$SSH_TTY" ]; then
     in_ssh_session=yes
 else
-    who_m_tty=$(who -m|sed "s/^[^ ]\+ \+\([^ ]\+\) .*/ \1 /")
-    w|grep -q " $who_m_tty .* sshd: " && in_ssh_session=yes
-    unset who_m_tty
+    tty_dev=$(tty);
+    tty_dev_trimmed=${tty_dev#/*/};
+    w|grep -v " .*grep"|grep -q " $tty_dev_trimmed .* sshd: " \
+        && in_ssh_session=yes
+    unset tty_dev tty_dev_trimmed
 fi
 if [ -n "$in_ssh_session" ]; then
     ps1_host_part='@\[\033[47m\]\[\033[32m\]\h\[\033[00m\]'
