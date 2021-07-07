@@ -53,9 +53,6 @@ alias gen_cov_html_report='[ ${PWD##*/} == "src" ] \
     && genhtml ../lcov/report.info -o ../lcov/html \
         -t $(basename $(readlink -f $(pwd)/..))_test'
 alias ggrep='git grep --no-index'
-alias gnat2018="PATH=/opt/GNAT/2018/bin:$PATH"
-alias gnat2019="PATH=/opt/GNAT/2019/bin:$PATH"
-alias gnat2020="PATH=/opt/GNAT/2020/bin:$PATH"
 alias gquit=gnome-session-quit
 alias guestinfo='sudo virsh list --all && sudo virsh net-dhcp-leases default'
 alias ifp='sudo ifp'
@@ -869,4 +866,56 @@ rdp() {
     # the remote machine URL.
 
     xfreerdp +glyph-cache /relax-order-checks /u:"$1" /v:"$2" /kbd:0x40c /f;
+}
+
+without_gnat_ce() {
+
+    # Remove GNAT Community Edition from the path.
+
+    PATH=$(echo "$PATH" \
+        | sed "s/\(.*:\|^\)\(\/opt\/GNAT\/2[0-9]\{3\}\/bin\)\($\|:.*\)/\1\3/" \
+        | sed "s/^://" \
+        | sed "s/::/:/" \
+        | sed "s/:$//");
+}
+
+latest_installed_gnat_ce() {
+
+    # Echoes the version of the latest installed GNAT Community Edition.
+
+    find /opt/GNAT/ -mindepth 1 -maxdepth 1 -type d -regextype posix-extended \
+        -regex "^\/opt\/GNAT\/2[0-9]{3}$" \
+        -exec find {}/bin -mindepth 1 -maxdepth 1 \
+        -type f -executable -name gnat \; 2>/dev/null \
+        | sed "s/^.*\/\(2[0-9]\{3\}\).*/\1/" \
+        | sort \
+        | tail -1;
+}
+
+with_gnat_ce() {
+
+    # Add GNAT Community Edition to the path. The desired version can be
+    # provided as an argument (e.g. "2021"). If no argument is provided, then
+    # the latest version is selected (detected using function
+    # 'latest_installed_gnat_ce'). If GNAT Community Edition is already in the
+    # path, is removed (using function 'without_gnat_ce') before being added
+    # again.
+
+    local LATEST_VERSION=$(latest_installed_gnat_ce);
+
+    if [ -z "$LATEST_VERSION" ]; then
+        echo "No GNAT Community Edition installation found" 1>&2;
+        return 1;
+    fi;
+
+    local VERSION="${1:-$LATEST_VERSION}";
+
+    local GNAT_PATH=/opt/GNAT/"$VERSION"/bin/gnat;
+    if [ -x "$GNAT_PATH" ]; then
+        without_gnat_ce;
+        PATH="${GNAT_PATH%/*}":"$PATH"
+    else
+        echo "$GNAT_PATH does not exist or is not an executable" 1>&2;
+        return 1;
+    fi;
 }
