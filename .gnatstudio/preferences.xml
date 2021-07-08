@@ -1,14 +1,20 @@
 <?xml version="1.0"?>
 <Prefs>
   <pref name="SPARK/user_profile" >Basic</pref>
-  <pref name="General-Charset" >ISO-8859-1</pref>
+  <pref name="General-Charset" >UTF-8</pref>
+  <pref name="GPS6-Src-Editor-Display-Line_Numbers" >Never</pref>
+  <pref name="General-Display-Welcome" >FALSE</pref>
   <pref name="Src-Editor-Keywords-Variant" >DEFAULT@rgb(240,141,36)@rgba(0,0,0,0)</pref>
-  <pref name="Src-Editor-Reference-Style" >DejaVu Sans Mono 8@rgb(186,186,186)@rgb(34,35,36)</pref>
+  <pref name="Src-Editor-Reference-Style" >Inconsolata Italic 9@rgb(186,186,186)@rgb(34,35,36)</pref>
+  <pref name="C-Auto-Indentation" >Simple</pref>
+  <pref name="Ada-Auto-Indentation" >Simple</pref>
   <pref name="Diff-Side-Change-Color" >rgb(107,73,19)</pref>
   <pref name="Debugger-Line-With-Breakpoint" >rgb(190,191,196)</pref>
+  <pref name="Src-Editor-Highlight-Column" > 79</pref>
   <pref name="Src-Editor-Ephemeral-Simple" >DEFAULT@rgba(0,0,0,0)@rgb(69,74,69)</pref>
   <pref name="Editor/Fonts &amp; Colors:General/comment_notes" >DEFAULT@rgb(144,122,142)@rgba(0,0,0,0)</pref>
   <pref name="Editor/Fonts &amp; Colors:General/preprocessor" >DEFAULT@rgb(160,160,240)@rgba(0,0,0,0)</pref>
+  <pref name="explorer-show-object-dirs" >FALSE</pref>
   <pref name="Low-Importance-Messages-Highlight" >rgba(191,188,64,0.19607843137299999)</pref>
   <pref name="Src-Editor-Current-Block-Color" >rgb(48,51,51)</pref>
   <pref name="Debugger-Editor-Current-Line" >rgba(58,71,54,0.59999999999999998)</pref>
@@ -22,14 +28,17 @@
   <pref name="Browsers-Bg-Color" >rgb(34,35,36)</pref>
   <pref name="Src-Editor-Ephemeral-Smart" >DEFAULT@rgba(0,0,0,0)@rgba(128,236,255,0.35294117647099998)</pref>
   <pref name="Editor/Fonts &amp; Colors:General/read_only_color" >rgb(46,52,54)</pref>
+  <pref name="explorer-show-directories" >FALSE</pref>
   <pref name="Medium-Importance-Messages-Highlight" >rgb(85,52,18)</pref>
   <pref name="/Color-Theme" >Darkside</pref>
   <pref name="Src-Editor-Aspects-Keywords-Variant" >DEFAULT@rgb(173,127,168)@rgba(0,0,0,0)</pref>
   <pref name="Diff-Side-Remove-Color" >rgb(88,43,43)</pref>
+  <pref name="explorer-show-basenames" >TRUE</pref>
   <pref name="Src-Editor-Type-Variant" >DEFAULT@rgb(142,105,201)@rgba(0,0,0,0)</pref>
   <pref name="Command-Windows-Background-Color" >rgb(38,38,38)</pref>
   <pref name="Src-Editor-Strings-Variant" >DEFAULT@rgb(242,212,44)@rgba(0,0,0,0)</pref>
   <pref name="Src-Editor-Current-Line-Color" >rgb(48,51,51)</pref>
+  <pref name="General-Splash-Screen" >FALSE</pref>
   <pref name="High-Importance-Messages-Highlight" >rgb(75,34,34)</pref>
   <pref name="Src-Editor-Block-Variant" >DEFAULT@rgb(104,194,68)@rgba(0,0,0,0)</pref>
   <pref name="Src-Editor-Code-Annotations-Variant-18" >DEFAULT@rgba(0,0,0,0)@rgb(96,96,96)</pref>
@@ -37,8 +46,10 @@
   <pref name="Editor/Fonts &amp; Colors:General/string escapes" >DEFAULT@rgb(218,116,149)@rgba(0,0,0,0)</pref>
   <pref name="Info-Messages-Highlight" >rgba(15,53,188,0.47058823529400001)</pref>
   <pref name="Src-Editor-Comments-Variant" >DEFAULT@rgb(114,159,207)@rgba(0,0,0,0)</pref>
+  <pref name="Auto-Reload-Files" >TRUE</pref>
   <pref name="Src-Editor-Hyper-Links-Variant" >DEFAULT@rgb(114,159,207)@rgba(0,0,0,0)</pref>
   <pref name="GPS6-Gtk-Theme-Name" >Adwaita (Dark)</pref>
+  <pref name="explorer-show-flat-view" >TRUE</pref>
   <pref name="Plugins/dispatching/color" >rgb(46,52,56)</pref>
   <pref name="Clearcase/Uncheckout behavior" >Keep</pref>
 </Prefs>
