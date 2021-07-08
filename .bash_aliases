@@ -113,6 +113,14 @@ config_clean_filters() {
     fi;
 }
 
+find_sort_by_time() {
+
+    # Invoke 'find' with all the arguments provided plus more arguments to show
+    # the modification date of found items, and pipe the output to 'sort'.
+
+    find $* -printf "%TY-%Tm-%Td %TH:%TM:%TS %p\n" | sort;
+}
+
 cpu() {
 
     # Show CPU Mhz (obtained via a 'lscpu|grep "^CPU MHz: "' command) and
