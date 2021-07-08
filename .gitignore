@@ -15,6 +15,9 @@
 .dlume/*
 !.dlume
 !.dlume/dlume
+.gnatstudio/*
+!.gnatstudio
+!.gnatstudio/preferences.xml
 .gnupg/*
 !.gnupg
 !.gnupg/gpg-agent.conf
