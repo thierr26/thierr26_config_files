@@ -54,6 +54,7 @@ alias gen_cov_html_report='[ ${PWD##*/} == "src" ] \
         -t $(basename $(readlink -f $(pwd)/..))_test'
 alias ggrep='git grep --no-index'
 alias gquit=gnome-session-quit
+alias gstudio='gnatstudio -P default.gpr &'
 alias guestinfo='sudo virsh list --all && sudo virsh net-dhcp-leases default'
 alias ifp='sudo ifp'
 alias list_installed_packages='dpkg-query -f '\''${binary:Package}\n'\'' -W'
