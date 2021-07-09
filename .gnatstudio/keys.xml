@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<Keys>
+  <key action="Exit"  />
+  <key action="Compile file" >F10</key>
+</Keys>

@@ -17,6 +17,7 @@
 !.dlume/dlume
 .gnatstudio/*
 !.gnatstudio
+!.gnatstudio/keys.xml
 !.gnatstudio/preferences.xml
 .gnupg/*
 !.gnupg
