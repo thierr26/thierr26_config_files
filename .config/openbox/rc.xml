@@ -812,6 +812,9 @@
     <application class="Firefox-esr">
       <maximized>yes</maximized>
     </application>
+    <application class="Gnatstudio_exe">
+      <desktop>2</desktop>
+    </application>
     <application class="Claws-mail">
       <maximized>yes</maximized>
     </application>
