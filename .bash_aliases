@@ -9,7 +9,7 @@ alias fm='fetchmail --mda "procmail -f %F" && inc'
 alias g=git
 alias gb=gprbuild
 alias gc='gprclean -q'
-alias gen_cov_html_cum_report='without_gnat_ce \
+alias gen_cov_html_cum_report='with_gnat_ce 2018 \
     && [ ${PWD##*/} == "src" ] \
     && rm -rf ../lcov_cum \
     && mkdir ../lcov_cum \
@@ -38,7 +38,7 @@ alias gen_cov_html_cum_report='without_gnat_ce \
     && genhtml ../lcov_cum/cum_report.info -o ../lcov_cum/html \
         -t cum_$(basename $(readlink -f $(pwd)/..)) \
     && with_gnat_ce'
-alias gen_cov_html_report='without_gnat_ce \
+alias gen_cov_html_report='with_gnat_ce 2018 \
     && [ ${PWD##*/} == "src" ] \
     && rm -rf ../lcov \
     && mkdir ../lcov \
