@@ -19,6 +19,7 @@
 !.gnatstudio
 !.gnatstudio/keys.xml
 !.gnatstudio/preferences.xml
+!.gnatstudio/perspectives6.xml
 .gnupg/*
 !.gnupg
 !.gnupg/gpg-agent.conf

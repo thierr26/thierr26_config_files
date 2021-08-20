@@ -1,0 +1,286 @@
+<?xml version="1.0"?>
+<GNAT_Studio >
+  <perspectives state=" 4" mdi_height=" 1004" mdi_width=" 1920" height=" 900" width=" 1280">
+    <perspective name="Default">
+      <Pane width=" 1.00000E+02%" Orientation="ORIENTATION_HORIZONTAL">
+        <Pane width=" 2.67259E+01%" Orientation="ORIENTATION_VERTICAL">
+          <Notebook height=" 5.02008E+01%" Tabs="POS_LEFT">
+            <Child Raised="True" Group=" 106" State="NORMAL">
+              <Project_Explorer_Project  />
+            </Child>
+            <Child Group=" 106" State="NORMAL">
+              <Scenario_View  />
+            </Child>
+          </Notebook>
+          <Notebook height=" 5.02008E+01%" Tabs="POS_LEFT">
+            <Child Group=" 106" State="NORMAL">
+              <Learn_View  />
+            </Child>
+            <Child Raised="True" Group=" 106" State="NORMAL">
+              <Outline_View  />
+            </Child>
+          </Notebook>
+        </Pane>
+        <Pane width=" 7.34833E+01%" Orientation="ORIENTATION_VERTICAL">
+          <central height=" 8.02209E+01%" />
+          <Pane height=" 2.01807E+01%" Orientation="ORIENTATION_HORIZONTAL">
+            <Notebook width=" 5.01074E+01%" Tabs="POS_TOP">
+              <Child Raised="True" Group=" 107" State="NORMAL">
+                <Message_Window  />
+              </Child>
+            </Notebook>
+            <Notebook width=" 5.01074E+01%" Tabs="POS_TOP">
+              <Child Raised="True" Group=" 107" State="NORMAL">
+                <Location_View_Record  />
+              </Child>
+            </Notebook>
+          </Pane>
+        </Pane>
+      </Pane>
+    </perspective>
+    <perspective name="Debug" save_as_central="false">
+      <Pane width=" 1.00000E+02%" Orientation="ORIENTATION_HORIZONTAL">
+        <Pane width=" 2.67259E+01%" Orientation="ORIENTATION_VERTICAL">
+          <Notebook height=" 5.02008E+01%" Tabs="POS_LEFT">
+            <Child Raised="True" Group=" 106" State="NORMAL">
+              <Project_Explorer_Project  />
+            </Child>
+          </Notebook>
+          <Notebook height=" 5.02008E+01%" Tabs="POS_LEFT">
+            <Child Group=" 107" State="NORMAL">
+              <Breakpoints  />
+            </Child>
+            <Child Raised="True" Group=" 106" State="NORMAL">
+              <Outline_View  />
+            </Child>
+          </Notebook>
+        </Pane>
+        <Pane width=" 7.34833E+01%" Orientation="ORIENTATION_VERTICAL">
+          <Pane height=" 7.01807E+01%" Orientation="ORIENTATION_HORIZONTAL">
+            <central width=" 7.07230E+01%" />
+            <Pane width=" 2.94918E+01%" Orientation="ORIENTATION_VERTICAL">
+              <Notebook height=" 5.03618E+01%" Tabs="POS_RIGHT">
+                <Child Raised="True" Group=" 107" State="NORMAL">
+                  <Debugger_Variables  />
+                </Child>
+              </Notebook>
+              <Notebook height=" 5.03618E+01%" Tabs="POS_RIGHT">
+                <Child Raised="True" Group=" 103" State="NORMAL">
+                  <Call_Stack  />
+                </Child>
+              </Notebook>
+            </Pane>
+          </Pane>
+          <Pane height=" 3.02209E+01%" Orientation="ORIENTATION_HORIZONTAL">
+            <Notebook width=" 5.01074E+01%" Tabs="POS_TOP">
+              <Child Group=" 107" State="NORMAL">
+                <Message_Window  />
+              </Child>
+              <Child Raised="True" Group=" 107" State="NORMAL">
+                <Debugger_Console  />
+              </Child>
+              <Child Group=" 107" State="NORMAL">
+                <Debugger_Execution  />
+              </Child>
+              <Child Group=" 107" State="NORMAL">
+                <Callgraph_View  />
+              </Child>
+            </Notebook>
+            <Notebook width=" 5.01074E+01%" Tabs="POS_TOP">
+              <Child Raised="True" Group=" 107" State="NORMAL">
+                <Location_View_Record  />
+              </Child>
+            </Notebook>
+          </Pane>
+        </Pane>
+      </Pane>
+    </perspective>
+    <perspective name="Analyze">
+      <Pane width=" 1.00000E+02%" Orientation="ORIENTATION_HORIZONTAL">
+        <Notebook width=" 2.10251E+01%" Tabs="POS_LEFT">
+          <Child Group=" 106" State="NORMAL">
+            <Project_Explorer_Project  />
+          </Child>
+          <Child Group=" 106" State="NORMAL">
+            <Outline_View  />
+          </Child>
+          <Child Group=" 106" State="NORMAL">
+            <Scenario_View  />
+          </Child>
+          <Child Raised="True" Group=" 106" State="NORMAL">
+            <gnathub_filters  />
+          </Child>
+        </Notebook>
+        <Pane width=" 7.91841E+01%" Orientation="ORIENTATION_VERTICAL">
+          <central height=" 7.82518E+01%" />
+          <Notebook height=" 2.21644E+01%" Tabs="POS_TOP">
+            <Child Group=" 107" State="NORMAL">
+              <Message_Window  />
+            </Child>
+            <Child Raised="True" Focus="True" Group=" 107" State="NORMAL">
+              <Location_View_Record  />
+            </Child>
+          </Notebook>
+        </Pane>
+      </Pane>
+    </perspective>
+    <perspective name="VCS">
+      <Pane width=" 1.00000E+02%" Orientation="ORIENTATION_HORIZONTAL">
+        <Notebook width=" 1.38655E+01%" Tabs="POS_LEFT">
+          <Child Raised="True" Group=" 106" State="NORMAL">
+            <Project_Explorer_Project  />
+          </Child>
+        </Notebook>
+        <Pane width=" 3.64496E+01%" Orientation="ORIENTATION_VERTICAL">
+          <central height=" 6.60643E+01%" />
+          <Notebook height=" 3.43373E+01%" Tabs="POS_TOP">
+            <Child Group=" 107" State="NORMAL">
+              <Message_Window  />
+            </Child>
+            <Child Raised="True" Group=" 106" State="NORMAL">
+              <Branches  />
+            </Child>
+          </Notebook>
+        </Pane>
+        <Notebook width=" 2.55252E+01%" Tabs="POS_TOP">
+          <Child Raised="True" Group=" 106" State="NORMAL">
+            <VCS_History  />
+          </Child>
+          <Child Group=" 106" State="NORMAL">
+            <Outline_View  />
+          </Child>
+        </Notebook>
+        <Notebook width=" 2.43697E+01%" Tabs="POS_TOP">
+          <Child Raised="True" Group=" 106" State="NORMAL">
+            <Commits  />
+          </Child>
+        </Notebook>
+      </Pane>
+    </perspective>
+    <perspective name="Maximized Editors">
+      <Pane width=" 1.00000E+02%" Orientation="ORIENTATION_HORIZONTAL" >
+        <Pane width=" 1.85669E+01%" Orientation="ORIENTATION_VERTICAL" >
+          <Notebook height=" 8.52410E+01%" Tabs="POS_TOP" >
+            <Child Raised="True" Group=" 106" State="NORMAL" >
+              <Project_Explorer_Project />
+            </Child>
+            <Child Group=" 106" State="NORMAL" >
+              <Outline_View />
+            </Child>
+            <Child Group=" 107" State="NORMAL" >
+              <Location_View_Record />
+            </Child>
+            <Child Group=" 107" State="NORMAL" >
+              <Callgraph_View />
+            </Child>
+            <Child Group=" 106" State="NORMAL" >
+              <Learn_View />
+            </Child>
+          </Notebook>
+          <Notebook height=" 1.51606E+01%" Tabs="POS_TOP" >
+            <Child Raised="True" Group=" 107" State="NORMAL" >
+              <Message_Window />
+            </Child>
+          </Notebook>
+        </Pane>
+        <central width=" 8.16423E+01%"  />
+      </Pane>
+    </perspective>
+  </perspectives>
+  <desktops >
+    <desktop perspective="Maximized Editors" >
+      <vfs_project>/home/thierry/data/dvlpt/ada/ompacc/src/default.gpr</vfs_project>
+      <Callgraph_View>
+        <callgraph position=" 4.98592E+01%"  />
+      </Callgraph_View>
+      <Learn_View>
+        <learn position=" 4.98592E+01%"  />
+      </Learn_View>
+      <Pane width=" 1.00000E+02%" Orientation="ORIENTATION_HORIZONTAL" >
+        <Notebook width=" 3.33118E+01%" Tabs="POS_TOP" >
+          <Child Raised="True" Focus="True" Group=" 1" State="NORMAL" >
+            <Source_Editor>
+              <project>/home/thierry/data/dvlpt/ada/ompacc/src/ompacc_lib.gpr</project>
+              <Column_End>1</Column_End>
+              <Column>1</Column>
+              <Line>128</Line>
+              <vfs_File>/home/thierry/data/dvlpt/ada/ompacc/src/testing-reporter-protected_instant_output.adb</vfs_File>
+            </Source_Editor>
+          </Child>
+        </Notebook>
+        <Notebook width=" 3.33118E+01%" Tabs="POS_TOP" >
+          <Child Raised="True" Group=" 1" State="NORMAL" >
+            <Source_Editor>
+              <project>/home/thierry/data/dvlpt/ada/ompacc/src/ompacc_lib.gpr</project>
+              <Column_End>1</Column_End>
+              <Column>1</Column>
+              <Line>5</Line>
+              <vfs_File>/home/thierry/data/dvlpt/ada/ompacc/src/buffers-text-bounded.ads</vfs_File>
+            </Source_Editor>
+          </Child>
+        </Notebook>
+        <Notebook width=" 3.36992E+01%" Tabs="POS_TOP" >
+          <Child Raised="True" Group=" 1" State="NORMAL" >
+            <Source_Editor>
+              <project>/home/thierry/data/dvlpt/ada/ompacc/src/ompacc_lib.gpr</project>
+              <Column_End>1</Column_End>
+              <Column>1</Column>
+              <Line>38</Line>
+              <vfs_File>/home/thierry/data/dvlpt/ada/ompacc/src/testing-generic_scenario_infra-outcome.adb</vfs_File>
+            </Source_Editor>
+          </Child>
+        </Notebook>
+      </Pane>
+    </desktop>
+    <desktop perspective="Default">
+      <vfs_project >/home/thierry/data/dvlpt/ada/addeje/src/addeje.gpr</vfs_project>
+      <Callgraph_View >
+        <callgraph position=" 5.00000E+01%" />
+      </Callgraph_View>
+      <Pane width=" 1.00000E+02%" Orientation="ORIENTATION_HORIZONTAL">
+        <Notebook width=" 1.00407E+02%" Tabs="POS_TOP">
+          <Child Raised="True" Focus="True" Group=" 1" State="NORMAL">
+            <Source_Editor >
+              <project >/home/thierry/data/dvlpt/ada/ompacc/gnat_projects/ompacc_lib.gpr</project>
+              <Column_End >8</Column_End>
+              <Column >8</Column>
+              <Line >71</Line>
+              <vfs_File >/home/thierry/data/dvlpt/ada/ompacc/src/integers.adb</vfs_File>
+            </Source_Editor>
+          </Child>
+          <Child Group=" 1" State="NORMAL">
+            <Source_Editor >
+              <project >/home/thierry/data/dvlpt/ada/addeje/src/addeje.gpr</project>
+              <Column_End >1</Column_End>
+              <Column >1</Column>
+              <Line >1</Line>
+              <vfs_File >/home/thierry/data/dvlpt/ada/addeje/src/_mains/ada_values/av_main.adb</vfs_File>
+            </Source_Editor>
+          </Child>
+        </Notebook>
+      </Pane>
+    </desktop>
+    <desktop perspective="Maximized Editors">
+      <vfs_project >/home/thierry/data/dvlpt/ada/addeje/src/default.gpr</vfs_project>
+      <Callgraph_View >
+        <callgraph position=" 4.98592E+01%" />
+      </Callgraph_View>
+      <Learn_View >
+        <learn position=" 4.99361E+01%" />
+      </Learn_View>
+      <Pane width=" 1.00000E+02%" Orientation="ORIENTATION_HORIZONTAL">
+        <Notebook width=" 1.00257E+02%" Tabs="POS_TOP">
+          <Child Raised="True" Focus="True" Group=" 1" State="NORMAL">
+            <Source_Editor >
+              <project >/home/thierry/data/dvlpt/ada/ompacc/gnat_projects/ompacc_lib.gpr</project>
+              <Column_End >26</Column_End>
+              <Column >26</Column>
+              <Line >12</Line>
+              <vfs_File >/home/thierry/data/dvlpt/ada/ompacc/src/integers.adb</vfs_File>
+            </Source_Editor>
+          </Child>
+        </Notebook>
+      </Pane>
+    </desktop>
+  </desktops>
+</GNAT_Studio>
