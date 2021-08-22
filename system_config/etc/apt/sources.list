@@ -1,18 +1,17 @@
-# 
+# deb cdrom:[Debian GNU/Linux 11.0.0 _Bullseye_ - Official amd64 NETINST 20210814-10:07]/ bullseye main
 
-# deb cdrom:[Debian GNU/Linux 10.0.0 _Buster_ - Official amd64 NETINST 20190706-10:23]/ buster main
+#deb cdrom:[Debian GNU/Linux 11.0.0 _Bullseye_ - Official amd64 NETINST 20210814-10:07]/ bullseye main
 
-#deb cdrom:[Debian GNU/Linux 10.0.0 _Buster_ - Official amd64 NETINST 20190706-10:23]/ buster main
+deb http://ftp.fr.debian.org/debian/ bullseye main non-free contrib
+deb-src http://ftp.fr.debian.org/debian/ bullseye main non-free contrib
 
-deb http://debian.apt-mirror.de/debian/ buster main non-free contrib
-deb-src http://debian.apt-mirror.de/debian/ buster main non-free contrib
+deb http://security.debian.org/debian-security bullseye-security main
+deb-src http://security.debian.org/debian-security bullseye-security main
 
-deb http://security.debian.org/debian-security buster/updates main non-free contrib
-deb-src http://security.debian.org/debian-security buster/updates main non-free contrib
-
-# buster-updates, previously known as 'volatile'
-deb http://debian.apt-mirror.de/debian/ buster-updates main non-free contrib
-deb-src http://debian.apt-mirror.de/debian/ buster-updates main non-free contrib
+# bullseye-updates, to get updates before a point release is made;
+# see https://www.debian.org/doc/manuals/debian-reference/ch02.en.html#_updates_and_backports
+deb http://ftp.fr.debian.org/debian/ bullseye-updates main
+deb-src http://ftp.fr.debian.org/debian/ bullseye-updates main
 
 # This system was installed using small removable media
 # (e.g. netinst, live or single CD). The matching "deb cdrom"
@@ -20,4 +19,4 @@ deb-src http://debian.apt-mirror.de/debian/ buster-updates main non-free contrib
 # For information about how to configure apt package sources,
 # see the sources.list(5) manual.
 
-deb https://www.deb-multimedia.org buster main non-free
+deb https://www.deb-multimedia.org bullseye main non-free
