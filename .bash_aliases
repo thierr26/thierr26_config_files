@@ -133,8 +133,11 @@ cpu() {
 
     local REGEX="^CPU MHz: \+";
     lscpu|grep "$REGEX"|sed "s/$REGEX\([^\s]\+\)/Running at \1 MHz/";
-    local REGEX="^%Cpu[0-9]\s*:";
-    top -b -n1 -1|grep "$REGEX"|sed "s/$REGEX//"
+    local REGEX="%Cpu[0-9]\s*:";
+    top -b -n1 -1 \
+        | sed "s/\(\s\+$REGEX\)/\n\1/" \
+        | grep "^\s*$REGEX" \
+        | sed "s/^\s*$REGEX//";
 }
 
 display_positions() {
