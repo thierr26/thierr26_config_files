@@ -44,7 +44,7 @@ alias gen_cov_html_report='with_gnat_ce 2018 \
     && mkdir ../lcov \
     && gprclean -q -r -P default.gpr -XOMPACC_BUILD_MODE=coverage \
     && gprbuild -p -P $(ls *_test.gpr) -XOMPACC_BUILD_MODE=coverage \
-    && ../gnat_build/src-coverage-bin/harness \
+    && $(find ../gnat_build/src-coverage-bin -name "*_test" | head -1) \
     && lcov -c \
         -d ../gnat_build/src-coverage-obj/ -o ../lcov/report_full.info \
         -t $(basename $(readlink -f $(pwd)/..))_test \
