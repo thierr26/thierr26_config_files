@@ -34,7 +34,7 @@ root	ALL=(ALL:ALL) ALL
                       /usr/bin/nmap, \
                       /usr/bin/tcpdump
 
-# Allow any user to execute /usr/bin/ifp without password
+# Allow any user to execute /usr/bin/virsh without password
 ALL	ALL=(ALL:ALL) NOPASSWD: /usr/bin/virsh
 
 @includedir /etc/sudoers.d
