@@ -18,5 +18,3 @@ deb-src http://ftp.fr.debian.org/debian/ bullseye-updates main contrib non-free
 # entries were disabled at the end of the installation process.
 # For information about how to configure apt package sources,
 # see the sources.list(5) manual.
-
-deb https://www.deb-multimedia.org bullseye main non-free
