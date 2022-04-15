@@ -348,6 +348,11 @@
         <menu>root-menu</menu>
       </action>
     </keybind>
+    <keybind key="W-m">
+      <action name="ShowMenu">
+        <menu>root-menu</menu>
+      </action>
+    </keybind>
   </keyboard>
   <mouse>
     <dragThreshold>1</dragThreshold>
