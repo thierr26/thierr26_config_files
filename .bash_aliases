@@ -83,7 +83,6 @@ alias spam='refile +Spam'
 alias t=task
 alias ta='task add pri:M'
 alias tapp='task add pri:H +appointment'
-alias tmks='tmux kill-server'
 alias tv='vlc http://mafreebox.freebox.fr/freeboxtv/playlist.m3u &'
 alias vi='vi -u NONE'
 alias vim.tiny='vi -u NONE'
