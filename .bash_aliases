@@ -1,8 +1,5 @@
 alias am=alsamixer
 alias clear_gpg_agent='gpg-connect-agent reloadagent /bye'
-C=connected;
-alias displays="xrandr|grep '^[A-Z][^ ]\+ \+$C '|sed 's/ \+$C .*$//'"
-unset C;
 alias ds='du -sBM'
 alias e='vim -O'
 alias fm='fetchmail --mda "procmail -f %F" && inc'
@@ -140,21 +137,89 @@ cpu() {
         | sed "s/^\s*$REGEX//";
 }
 
+displays() {
+
+    # Show connected displays. One of the displays should be marked as
+    # "primary" (here "primary" means "the display which is connected when
+    # using the machine in a single monitor setup"). If none or more than one
+    # are marked as primary then the code of the present function needs an
+    # update.
+
+    xrandr --verbose \
+        | grep -e '^[A-Za-z][^ ]* \+connected ' -e Brightness -e Gamma \
+        | sed 's/ \+connected .*$//' \
+        | sed 's/^\(DVI-0\|eDP-1\|LVDS-1\)/\1 (primary)/';
+}
+
+primary_display() {
+
+    # Show primary display. Relies on function 'displays'. See comment in
+    # function 'displays'.
+
+    displays | grep " (primary)$" | sed "s/ (primary)$//";
+}
+
 display_positions() {
 
     # Issue a 'xrandr --auto' command followed by a
     # 'xrandr --output <first argument> --left-of <second argument>' command,
-    # unless the first argument is "LVDS-1" or "DVI-1". In this case, the
-    # second command is
+    # unless the first argument is "eDP-1", "LVDS-1" or "DVI-0". In this case,
+    # the second command is
     # 'xrandr --output <second argument> --right-of <first argument>'.
 
     xrandr --auto;
 
-    if [ "$1" == "LVDS-1" ] || [ "$1" == "DVI-1" ]; then
+    if [ "$1" == "eDP-1" ] || [ "$1" == "LVDS-1" ] || [ "$1" == "DVI-0" ]; then
         xrandr --output "$2" --right-of "$1";
     else
         xrandr --output "$1" --left-of "$2";
     fi;
+}
+
+brightness() {
+
+    # Set display brightness. The last argument must be the brightness value
+    # (e.g. 0.9). There can be an other argument before the brightness value
+    # that is the display name (as shown by function 'displays'). If no display
+    # name is provided, then the name of the primary display is used. Relies on
+    # functions 'displays' and 'primary_display'. See comment in function
+    # 'displays'.
+
+    local DISPL=;
+    local VALUE=;
+
+    if [ $# -lt 2 ]; then
+        DISPL="$(primary_display)";
+        VALUE="$1";
+    else
+        DISPL="$1";
+        VALUE="$2";
+    fi;
+
+    xrandr --output "$DISPL" --brightness "$VALUE";
+}
+
+gamma() {
+
+    # Set display gamma. The last argument must be the gamma value
+    # (e.g. 0.9:0.8:0.7). There can be an other argument before the gamma value
+    # that is the display name (as shown by function 'displays'). If no display
+    # name is provided, then the name of the primary display is used. Relies on
+    # functions 'displays' and 'primary_display'. See comment in function
+    # 'displays'.
+
+    local DISPL=;
+    local VALUE=;
+
+    if [ $# -lt 2 ]; then
+        DISPL="$(primary_display)";
+        VALUE="$1";
+    else
+        DISPL="$1";
+        VALUE="$2";
+    fi;
+
+    xrandr --output "$DISPL" --gamma "$VALUE";
 }
 
 ip_addr() {
