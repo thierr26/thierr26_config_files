@@ -514,7 +514,7 @@ rsync_data_backup() {
     # - Possible values for <target_name> are "chil", "ikki", "mang", "mysa",
     #   "rama" and "thuu".
     # - In the case of the "chil" and "rama" tsarget, you want to exclude (that
-    # is you don't want to backup) ~/data/image and ~/data/music (see the
+    #   is you don't want to backup) ~/data/image and ~/data/music (see the
     #   SPECIFIC_EXCLUDE local variable).
     # - For all targets, you want to exclude the item (directory or file)
     #   output by "secret -n" and the one output by "secret -a" (see the
@@ -527,7 +527,7 @@ rsync_data_backup() {
     # are removed in the backup.
     #
     # Note also that there is no trailing slash on the ~/data argument to the
-    # rsync command. It implies the the "data" directory is recreated in
+    # rsync command. It implies the "data" directory is recreated in
     # /media/$USER/<target_name>/$USER.
     # (see
     # qdosmsq.dunbar-it.co.uk/blog/2013/02/rsync-to-slash-or-not-to-slash).
