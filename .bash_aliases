@@ -233,7 +233,8 @@ freespace() {
     # Output a line indicating available space and percentage used on the drive
     # containing the directory or file provided as argument.
 
-    local F=$(readlink -f "$1");
+    local PROCESSED_ARG="${1:-$(pwd)}";
+    local F=$(readlink -f "$PROCESSED_ARG");
     echo $(df --output=avail -h "$F" | tail -n 1) available in "$F" \
         "($(df --output=pcent "$F" | tail -n 1|sed "s/^ *\(.\+\)/\1/") used)";
 }
