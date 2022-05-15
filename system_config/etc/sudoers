@@ -30,6 +30,7 @@ root	ALL=(ALL:ALL) ALL
                       /usr/sbin/dhclient, \
                       /sbin/iwlist * scan, \
                       /usr/sbin/openconnect, \
+                      /usr/sbin/ifdown, \
                       /usr/sbin/ifup, \
                       /usr/bin/nmap, \
                       /usr/bin/tcpdump
