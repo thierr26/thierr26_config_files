@@ -3,6 +3,7 @@ alias e='vi -O'
 alias ggrep='git grep --no-index'
 alias la='ls $LS_OPTIONS -a'
 alias lla='ls $LS_OPTIONS -la'
+alias nscan='nmap -sP -n 192.168.0.0/24'
 
 disk_health() {
 
