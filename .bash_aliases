@@ -235,7 +235,8 @@ freespace() {
 
     local PROCESSED_ARG="${1:-$(pwd)}";
     local F=$(readlink -f "$PROCESSED_ARG");
-    echo $(df --output=avail -h "$F" | tail -n 1) available in "$F" \
+    local H=$(hostname);
+    echo $(df --output=avail -h "$F" | tail -n 1) available in "$F" on "$H" \
         "($(df --output=pcent "$F" | tail -n 1|sed "s/^ *\(.\+\)/\1/") used)";
 }
 
