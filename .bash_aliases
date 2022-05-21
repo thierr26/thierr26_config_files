@@ -240,134 +240,191 @@ freespace() {
         "($(df --output=pcent "$F" | tail -n 1|sed "s/^ *\(.\+\)/\1/") used)";
 }
 
-secret_tar() {
-
-    # Archive (using tar) the directory provided as argument and pipe the
-    # output to gpg for symmetric encryption. The original directory is then
-    # destroyed.
-
-    tar -cvf - "$1"|gpg -e > "${1%/}".tar.gpg \
-        && find "$1" -type f -exec shred {} \; \
-        && rm -rf "$1";
-}
-
-secret_untar() {
-
-    # Decrypt (using 'gpg -d') the .tar.gpg file provided as argument and pipe
-    # the output to tar for archive extraction.
-
-    gpg -d "$1"|tar -xvf -;
-}
-
 secret() {
 
-    # Handle "secret" directory. Exactly one argument required (the option).
+    # Crypt and decrypt the items in the "secret" directory.
     #
-    # Option "-n": Output path to secret directory (which may exist or not).
-    # Option "-a": Output path to secret directory archive (.tar file) (which
-    #              does probably not exist, used as temporary file).
-    # Option "-p": Output path to encrypted secret directory archive (.tar.gpg
-    #              file).
-    # Option "-e": Encrypt secret directory.
-    # Option "-d": Decrypt secret directory (keeps encrypted file).
+    # The first argument must be one of the following:
+    #
+    # - '-s': Shows unencrypted items, if any. Always exits with exit status 0.
+    #         This is the default option.
+    # - '-c': Similar to '-s' but exits with exit status 1 if there are
+    #         unencrypted items.
+    # - '-e': Archives and encrypts an item (results in a .tar.gpg file).
+    # - '-d': Decrypts and extracts en item (the .tar.gpg file is not deleted).
+    # - '-p': Dumps one file of an encrypted element.
+    # - '-n': Shows the path to the "secret" directory.
+    #
+    # '-e' and '-d' requires the item name (without any leading directory path
+    #  and without any extension) to be provided as second argument.
+    #
+    # '-p' requires one more argument: the name of the file to be dumped
+    # (without any leading directory path).
 
     local ERR_PREF="${FUNCNAME[0]}: ";
     local SECRET_DIR_PATH="$(data_dir)"/secret/directory; # Adapt to your needs.
-    local SECRET_FILE_PATH="$SECRET_DIR_PATH".tar;
-    local SECRET_GPG_PATH="$SECRET_FILE_PATH".gpg;
-    local SECRET_PARENT="${SECRET_DIR_PATH%/*}";
-    local ARG=true;
-    local VALID_ARG=true;
-    local EXAC="Exactly one argument required";
-    local DONE="Done ";
-    local ENCR="Encrypting";
-    local DECR="Decrypting";
+    local PROCESSED_ARG_1="${1:--s}";
+    local VALID_ARG_1=true;
+    local ITEM=item;
+    local WARNING=Warning;
+    local ERROR=Error;
+    local EAT="exists as an unencrypted .tar archive";
+    local EAF="exists as an unencrypted file or directory";
+    local ISA="Invalid second argument";
+    local NMF=" (no matching file)";
+    local MMF=" (multiple matching files)";
 
-    [ $# -ne 1 ] && ARG=false;
+    [ "$PROCESSED_ARG_1" != "-s" ] \
+        && [ "$PROCESSED_ARG_1" != "-c" ] \
+        && [ "$PROCESSED_ARG_1" != "-e" ] \
+        && [ "$PROCESSED_ARG_1" != "-d" ] \
+        && [ "$PROCESSED_ARG_1" != "-p" ] \
+        && [ "$PROCESSED_ARG_1" != "-n" ] \
+        && VALID_ARG_1=false;
 
-    [ $ARG = true ] \
-        && [ "$1" != "-n" ] \
-        && [ "$1" != "-a" ] \
-        && [ "$1" != "-p" ] \
-        && [ "$1" != "-e" ] \
-        && [ "$1" != "-d" ] \
-        && VALID_ARG=false;
-
-    [[ $ARG = "false" || $VALID_ARG = "false" ]] \
-        && echo "${ERR_PREF}$EXAC:" \
-            "\"-n\", \"-a\", \"-p\", \"-e\" or \"-d\"." 1>&2 \
+    [ "$VALID_ARG_1" == false ] \
+        && echo "${ERR_PREF}Valid options are:" \
+            "\"-s\", \"-c\", \"-e\", \"-d\", \"-p\" or \"-n\"." 1>&2 \
         && return 1;
 
-    case "$1" in
-        -n)
-            echo "$SECRET_DIR_PATH";
+    shift;
+
+    local FIND_OUTPUT=$(find "$SECRET_DIR_PATH" -maxdepth 1 -mindepth 1);
+
+    local ITEM_LIST=$(echo "$FIND_OUTPUT" \
+        | (while IFS= read -r LINE; do \
+               echo "$LINE" \
+                   | sed -e "s/\.tar.gpg$//" \
+                   | sed -e "s/\.tar$//"; \
+           done) | sort -u);
+
+    local OUTPUT_LINE=;
+    local N=0;
+
+    local WI="$WARNING: $ITEM";
+    local EXIT_STATUS=0;
+
+    local ITEM_ARG_OK=false;
+
+    local FILE_MATCH_COUNT=0;
+
+    local WD=$(pwd);
+
+    case "$PROCESSED_ARG_1" in
+
+        -s|-c)
+
+            [ $# -gt 0 ] && echo "${ERR_PREF}Too many arguments." 1>&2 \
+                && return 1;
+
+            if [ "$PROCESSED_ARG_1" == -c ]; then
+                WI="$ERROR: $ITEM";
+                EXIT_STATUS=1;
+            fi;
+
+            for ITEM in $ITEM_LIST; do
+
+                OUTPUT_LINE=$(echo "$FIND_OUTPUT" \
+                    | grep "$ITEM.tar$" \
+                    | sed "s/^.\+\/\(.\+\)\.tar$/$WI \"\1\" $EAT./");
+
+                [ -n "$OUTPUT_LINE" ] && N=$(($N + 1)) && echo "$OUTPUT_LINE";
+
+                OUTPUT_LINE=$(echo "$FIND_OUTPUT" \
+                    | grep "$ITEM$" \
+                    | sed "s/^.\+\/\(.\+\)$/$WI \"\1\" $EAF./");
+
+                [ -n "$OUTPUT_LINE" ] && N=$(($N + 1)) && echo "$OUTPUT_LINE";
+
+            done;
+
+            if [ $N -gt 0 ]; then
+                return $EXIT_STATUS;
+            fi;
+
             ;;
-        -a)
-            echo "$SECRET_FILE_PATH";
+
+        -e|-d)
+
+            [ $# -eq 0 ] && echo "${ERR_PREF}Missing argument." 1>&2 \
+                && return 1;
+
+            [ $# -gt 1 ] && echo "${ERR_PREF}Too many arguments." 1>&2 \
+                && return 1;
+
+            for ITEM in $ITEM_LIST; do
+                [ "${ITEM##*/}" == "$1" ] && ITEM_ARG_OK=true && break;
+            done;
+
+            [ "$ITEM_ARG_OK" == false ] \
+                && echo "${ERR_PREF}Invalid last argument." 1>&2 \
+                && return 1;
+
+            cd "$SECRET_DIR_PATH";
+
+            if [ "$PROCESSED_ARG_1" == -e ]; then
+
+                tar -cvf - "$1"|gpg -e > "$1".tar.gpg \
+                    && find "$1" -type f -exec shred {} \; \
+                    && rm -rf "$1";
+
+            else
+
+                gpg -d "$1.tar.gpg"|tar -xvf -;
+
+            fi;
+
+            cd "$WD";
+
             ;;
+
         -p)
-            echo "$SECRET_GPG_PATH";
+
+            [ $# -eq 0 ] && echo "${ERR_PREF}Missing arguments." 1>&2 \
+                && return 1;
+
+            [ $# -eq 1 ] && echo "${ERR_PREF}Missing argument." 1>&2 \
+                && return 1;
+
+            [ $# -gt 2 ] && echo "${ERR_PREF}Too many arguments." 1>&2 \
+                && return 1;
+
+            for ITEM in $ITEM_LIST; do
+                [ "${ITEM##*/}" == "$1" ] && ITEM_ARG_OK=true && break;
+            done;
+
+            [ "$ITEM_ARG_OK" == false ] && echo "${ERR_PREF}$ISA." 1>&2 \
+                && return 1;
+
+            cd "$SECRET_DIR_PATH";
+
+            FILE_MATCH_COUNT=$(gpg -d "$1.tar.gpg" 2>/dev/null \
+                | tar -tf - | grep -c "\/$2$");
+
+            [ "$FILE_MATCH_COUNT" -eq 0 ] && echo "${ERR_PREF}$ISA$NMF." 1>&2 \
+                && return 1;
+
+            [ "$FILE_MATCH_COUNT" -gt 1 ] && echo "${ERR_PREF}$ISA$MMF." 1>&2 \
+                && return 1;
+
+            gpg -d "$1.tar.gpg" 2>/dev/null \
+                | tar -xOf - $(gpg -d "$1.tar.gpg" 2>/dev/null | tar -tf - \
+                | grep "\/$2$");
+
+            cd "$WD";
+
             ;;
-        -e)
-            [ ! -d "$SECRET_DIR_PATH" ] \
-                && echo \
-                    "${ERR_PREF}Directory $SECRET_DIR_PATH not found" 1>&2 \
+
+        -n)
+
+            [ $# -gt 0 ] && echo "${ERR_PREF}Too many arguments." 1>&2 \
                 && return 1;
-            echo "$ENCR"...;
-            rm -f "$SECRET_GPG_PATH";
-            [ -f "$SECRET_FILE_PATH" ] && shred -u "$SECRET_FILE_PATH";
-            tar -C "$SECRET_PARENT" -cvf \
-                "$SECRET_FILE_PATH" "${SECRET_DIR_PATH##*/}";
-            gpg -e "$SECRET_FILE_PATH";
-            shred -u "$SECRET_FILE_PATH";
-            find "$SECRET_DIR_PATH" -type f -exec shred {} \;
-            rm -rf "$SECRET_DIR_PATH";
-            echo "$DONE$ENCR";
+
+            echo "$SECRET_DIR_PATH";
+
             ;;
-        -d)
-            [ -d "$SECRET_DIR_PATH" ] \
-                && echo \
-                    "${ERR_PREF}Directory $SECRET_DIR_PATH already exists" \
-                        1>&2 \
-                && return 1;
-            [ ! -f "$SECRET_GPG_PATH" ] \
-                && echo "${ERR_PREF}$SECRET_GPG_PATH not found" 1>&2 \
-                && return 1;
-            echo "$DECR"...;
-            [ -f "$SECRET_FILE_PATH" ] && shred -u "$SECRET_FILE_PATH";
-            gpg "$SECRET_GPG_PATH";
-            tar -C "$SECRET_PARENT" -xvf "$SECRET_FILE_PATH";
-            shred -u "$SECRET_FILE_PATH";
-            echo "$DONE$DECR";
+
     esac;
-}
-
-secret_dump() {
-
-    # Dump a file of encrypted secret directory archive. Exactly one argument
-    # required (the path to the file in the archive, with some leading
-    # directories possibly removed).
-
-    [ $# -ne 1 ] \
-        && echo "${ERR_PREF}Exactly one argument required." 1>&2 \
-        && return 1;
-
-    local STR=" found in secret directory archive.";
-    local DECRYPT_CMD="gpg -d $(secret -p)";
-
-    local FILE_MATCH_COUNT=$($DECRYPT_CMD 2>/dev/null \
-        | tar -tf - | grep -c "\/$1$");
-
-    [ "$FILE_MATCH_COUNT" -eq 0 ] \
-        && echo "No matching file$STR" 1>&2 \
-        && return 1;
-
-    [ "$FILE_MATCH_COUNT" -gt 1 ] \
-        && echo "Multiple matching files$STR" 1>&2 \
-        && return 1;
-
-    $DECRYPT_CMD 2>/dev/null | tar -xOf - \
-        $($DECRYPT_CMD 2>/dev/null | tar -tf - | grep "\/$1$");
 }
 
 backup_dot_gnupg() {
@@ -402,251 +459,230 @@ backup_dot_gnupg() {
     rm -rf "$TARGET_DIR/$TARGET_NAME";
 }
 
-rsync_data_backup() {
+media() {
 
-    # Backup ~/data to /media/$USER/<target_name>/$USER (or restore
-    # /media/$USER/<target_name>/$USER/data to ~ if option "--restore" is used)
-    # using rsync.
+    # When used with a single argument, output the argument appended to
+    # /media/"$USER" and exit with status 0. The argument is supposed to be a
+    # simple name (i.e. a name without any directory separator). In the
+    # opposite case, exit with non-zero status.
     #
-    # <target_name> must be provided as the last argument on the command line.
-    #
-    # There can be one or two optional arguments (options) before
-    # <target_name>:
-    # - "--dry-run": causes the "-n" option is used in the rsync command to
-    #   make it a dry run.
-    # - "--restore": Performs a restoration instead of a backup.
-    #
-    # The following assumptions are made:
-    # - Possible values for <target_name> are "chil", "ikki", "mang", "mysa",
-    #   "rama" and "thuu".
-    # - In the case of the "chil" and "rama" tsarget, you want to exclude (that
-    #   is you don't want to backup) ~/data/image and ~/data/music (see the
-    #   SPECIFIC_EXCLUDE local variable).
-    # - For all targets, you want to exclude the item (directory or file)
-    #   output by "secret -n" and the one output by "secret -a" (see the
-    #   "--exclude" options in the rsync command and see the "secret" function
-    #   above).
-    # - Backup destination directory /media/$USER/<target_name>/$USER/data
-    #   already exists.
-    #
-    # Note the --delete option in the rsync command: Files removed from ~/data
-    # are removed in the backup.
-    #
-    # Note also that there is no trailing slash on the ~/data argument to the
-    # rsync command. It implies the "data" directory is recreated in
-    # /media/$USER/<target_name>/$USER.
-    # (see
-    # qdosmsq.dunbar-it.co.uk/blog/2013/02/rsync-to-slash-or-not-to-slash).
-    #
-    # One last note to mention that the function creates or modifies a file
-    # named rsync_data_backup_runs in ~/data (only if none of he options are
-    # used). The modification is to append a line indicating the UTC date, the
-    # hostname and the backup target.
+    # When used with two arguments ('-c' plus a name), does the same except
+    # that exit status is non-zero if the output does not designates an
+    # existing directory.
 
     local ERR_PREF="${FUNCNAME[0]}: ";
-    local U="$USER";
-    local DUPL_OPT_ERR="Duplicated option";
-    local DRYRUN_OPT=;
-    local BACKUP=true;
-    local TARGET=;
-    local SPECIFIC_EXCLUDE=;
-    local DEST_DIR=;
-    local DEST=;
-    local SOURCE=;
-    local SN="$(secret -n)";
-    local SA="$(secret -a)";
-    local RSYNC=;
+    local DO_CHECK=false;
+    local MA="Missing argument";
+    local IA="Invalid argument";
+
+    [ $# -eq 0 ] && echo "${ERR_PREF}$MA." 1>&2 && return 1;
+
+    if [ "$1" == "-c" ]; then
+        DO_CHECK=true;
+        shift;
+    fi;
+
+    [ $# -eq 0 ] && echo "${ERR_PREF}$MA." 1>&2 && return 1;
+
+    [ "${1##/*}" != "$1" ] && echo "${ERR_PREF}$IA." 1>&2 && return 1;
+
+    local MEDIA_ROOT=/media/"$USER";
+    local MEDIA_PATH=$(readlink -f "$MEDIA_ROOT"/"$1");
+
+    [ "$MEDIA_PATH" == "" ] && echo "${ERR_PREF}$IA." 1>&2 && return 1;
+
+    [ "$MEDIA_PATH" == "$MEDIA_ROOT" ] && echo "${ERR_PREF}$IA." 1>&2 \
+        && return 1;
+
+    echo "$MEDIA_PATH";
+    if [ $DO_CHECK == true ]; then
+        [ -d "$MEDIA_PATH" ];
+    fi;
+}
+
+rsync_data() {
+
+    # Issue an 'rsync' command. The command is elaborated based on the first
+    # argument (the "target") and the options following it.
+    #
+    # In all cases, if option '-n' is provided then option '-n' ("dry run") is used in the
+    # 'rsync' command.
+    #
+    # The other allowed option (though not in all cases, depending on the
+    # target) is '--restore'.
+    #
+    # If the target name terminates with a colon then it is considered to be a
+    # remote destination (like in a 'scp' command, possibly including a user
+    # specification). The issued 'rsync' command synchronizes the ~/data
+    # directory on the target with the data directory on the local host (or the
+    # other way round if option '--restore' is provided).
+    #
+    # If the target name is such that it causes 'media -c' to exit with exit
+    # status zero then the issued 'rsync' command synchronizes the data
+    # subdirectory of the 'media' output the ~/data directory on the local host
+    # (or the other way round if option '--restore' is provided). A line is
+    # added to file ~/data/rsync_data_runs before the synchronisation to keep
+    # track of this synchronization.
+    #
+    # Otherwise if the target is an existing directory then the 'rsync' command
+    # copies the content of the directory to a subdirectory of
+    # the ~/snapshot directory. For example, if the target is
+    # ~/data/work/important_project then the ~/snapshot subdirectory is like
+    # ~/snapshot/2019-07-26T14.00.40Z_work__important_project (note the double
+    # underscore between "work" and "important_project"). Note the function
+    # won't attempt the directory copy if the target is one of:
+    # - ~/data,
+    # - ~/data/image,
+    # - ~/data/music,
+    # - Any directory not in ~/data tree.
+    #
+    # A 'secret -c' command is issued before issuing the 'rsync' command if the
+    # synchronized directory tree contains the "secret" directory (see function
+    # 'secret'). A non-zero exit of 'secret -c' causes the function to return
+    # immediately.
+    #
+    # After issuing the 'rsync' command, function 'freespace' is called on the
+    # synchronization destination.
+
+    local ERR_PREF="${FUNCNAME[0]}: ";
     local DATA_DIR="$(data_dir)";
+    local DATA_DIR_LINK="$(readlink -f "$DATA_DIR")";
+    local SECRET_LINK="$(readlink -f "$(secret -n)")";
+    local SECRET_CHECK_REQUIRED=true;
+    local SPECIFIC_EXCLUDE=;
+    local SOURCE=;
+    local DEST=;
+    local TARGET;
+    local HOST_TARGET=;
+    local MEDIA_TARGET=;
+    local SNAPSHOT_TARGET=;
+    local DRY_RUN_OPT=;
+    local RESTORE_OPT=;
+    local OII="option is invalid";
+    local S=snapshot;
 
-    [ $# -eq 0 ] \
-        && echo "${ERR_PREF}At least one argument required." 1>&2 \
-        && return 1;
+    [ $# -eq 0 ] && echo "${ERR_PREF}Missing argument." 1>&2 && return 1;
 
-    while [[ "$1" != "" && "${1%%--*}" = "" ]]; do
+    [ "$1" != "${1%:}" ] && HOST_TARGET="$1";
 
-        case "$1" in
-            --dry-run)
-                [ -n "$DRYRUN_OPT" ] \
-                    && echo "${ERR_PREF}$DUPL_OPT_ERR: $1." 1>&2 \
-                    && return 1;
-                DRYRUN_OPT=-n;
-                shift;
-                ;;
-            --restore)
-                [ "$BACKUP" = "false" ] \
-                    && echo "${ERR_PREF}$DUPL_OPT_ERR: $1." 1>&2 \
-                    && return 1;
-                BACKUP=false;
-                shift;
-                ;;
-            *)
-                echo "${ERR_PREF}Invalid option: $1." 1>&2 && return 1;
-                ;;
-        esac;
+    if [ -z "$HOST_TARGET" ]; then
 
-    done;
+        MEDIA_TARGET="$(media -c "$1" 2>/dev/null)";
 
-    [ $# -eq 0 ] \
-        && echo "${ERR_PREF}Missing target name argument." 1>&2 \
-        && return 1;
+        [ $? -ne 0 ] && MEDIA_TARGET=;
 
-    [ $# -gt 1 ] \
-        && echo "${ERR_PREF}Too many arguments." 1>&2 \
-        && return 1;
+    fi;
 
-    TARGET="$1";
+    if [[ -z "$HOST_TARGET" && -z "$MEDIA_TARGET" ]]; then
 
-    case "$TARGET" in
-        ikki | mang | mysa | thuu)
-            ;;
-        chil | rama)
-            SPECIFIC_EXCLUDE="--exclude=image --exclude=music";
-            ;;
-        *)
-            echo "${ERR_PREF}Unknown target: $TARGET" 1>&2 \
-                && return 1;
-            ;;
-    esac;
+        SNAPSHOT_TARGET="$(readlink -f "$1")";
 
-    RSYNC="rsync $DRYRUN_OPT -aAXv --delete $SPECIFIC_EXCLUDE";
+        [ ! -d "$SNAPSHOT_TARGET" ] && SNAPSHOT_TARGET=;
 
-    if [ "$BACKUP" = "false" ]; then
+        [ "${SNAPSHOT_TARGET#$DATA_DIR_LINK/}" == "$SNAPSHOT_TARGET" ] \
+            && SNAPSHOT_TARGET=;
+        [ "$SNAPSHOT_TARGET" == "$DATA_DIR_LINK" ] && SNAPSHOT_TARGET=;
+        [ "$SNAPSHOT_TARGET" == "$DATA_DIR_LINK/image" ] && SNAPSHOT_TARGET=;
+        [ "$SNAPSHOT_TARGET" == "$DATA_DIR_LINK/music" ] && SNAPSHOT_TARGET=;
 
-        SOURCE="/media/$U/$TARGET/$U/${DATA_DIR##*/}";
-        $RSYNC "$SOURCE" ~;
-        freespace ~;
+        [ "${SECRET_LINK/#$SNAPSHOT_TARGET/}" == "$SECRET_LINK" ] \
+            && [ "${SNAPSHOT_TARGET/#$SECRET_LINK/}" == "$SNAPSHOT_TARGET" ] \
+            && SECRET_CHECK_REQUIRED=false;
+
+    fi;
+
+    [ -z "$HOST_TARGET" ] && [ -z "$MEDIA_TARGET" ] \
+        && [ -z "$SNAPSHOT_TARGET" ] \
+        && echo "${ERR_PREF}Can't do anything." 1>&2 && return 1;
+
+    if [ $SECRET_CHECK_REQUIRED == true ]; then
+        echo Checking $(secret -n) ...
+        secret -c;
+        [ $? != 0 ] && return 1;
+    fi
+
+    local DELETE_OPT=;
+
+    if [ -n "$HOST_TARGET" ]; then
+
+        SOURCE="$DATA_DIR";
+        DEST="$HOST_TARGET";
+        DELETE_OPT=--delete;
+
+    elif [ -n "$MEDIA_TARGET" ]; then
+
+        SOURCE="$DATA_DIR";
+        DEST="$MEDIA_TARGET"/"$USER";
+        DELETE_OPT=--delete;
+
+        [ "$1" == "chil" ] && SPECIFIC_EXCLUDE="--exclude=image --exclude=music";
 
     else
 
-        DEST="/media/$U/$TARGET/$U";
-
-        [ ! -d "$DEST" ] \
-            && echo "${ERR_PREF}Destination directory not found: $DEST." 1>&2 \
-            && return 1;
-
-        if [ -z "$DRYRUN_OPT" ]; then
-            echo $(timestamp) $(hostname) "->" "$TARGET" \
-                >> "$DATA_DIR/"${FUNCNAME[0]}_runs;
-        fi;
-
-        $RSYNC \
-            --exclude="${SN#"$DATA_DIR"/}" \
-            --exclude="${SA#"$DATA_DIR"/}" \
-            "$DATA_DIR" "$DEST";
-        freespace "$DEST";
+        SOURCE="$SNAPSHOT_TARGET"/;
+        DEST="$(snapshot_dir)"/$(timestamp)_;
+        DEST="$DEST$(echo "${SNAPSHOT_TARGET#"$DATA_DIR"/}" \
+            | sed "s/\//__/g")";
 
     fi;
-}
 
-rsync_snapshot() {
+    TARGET="$1";
 
-    # Copy the content of a directory provided as argument to a subdirectory of
-    # the ~/snapshot directory using rsync. Providing no directory is
-    # equivalent to providing the current working directory.
-    #
-    # For example, the content of directory ~/data/work/important_project would
-    # be copied to a directory named like
-    # ~/snapshot/2019-07-26T14.00.40Z_work__important_project (not the double
-    # underscore between "work" and "important_project").
-    #
-    # An encrypted archive is also created
-    # (~/snapshot/2019-07-26T14.00.40Z_work__important_project.tar.gpg).
-    # Decrypt with
-    # gpg ~/snapshot/2019-07-26T14.00.40Z_work__important_project.tar.gpg
-    #
-    # I you don't want the encrypted archive, add option "--no-gpg" as first
-    # argument.
-    #
-    # You can also provide additional rsync options before the directory
-    # argument (if any) and after the "--no-gpg" option (if any). Example:
-    #
-    # rsync_snapshot \
-    #     --no-gpg --exclude=unwanted_subdir ~/data/work/important_project
-    #
-    # Note the function won't attempt the directory copy if that directory is
-    # one of:
-    # - ~/data
-    # - ~/data/image
-    # - ~/data/music
-    # - The output of "secret -n" (see the "secret" function above)
-    # - Any directory not in ~/data tree
-    #
-    # Note also that the directory and file as output by "secret -n" and
-    # "secret -a" are ignored (i.e. not copied).
+    shift;
 
-    local ERR_PREF="${FUNCNAME[0]}: ";
-    local GPG_ARCHIVE=true;
-    local DATA_DIR="$(data_dir)";
-    local SNAP_DIR="$(snapshot_dir)";
-    local DIR="$(pwd)";
-    local DEST=;
-    local DEST_TAR=;
-    local SECRET_DIR_PATH="$(secret -n)"/secret/directory; # Adapt to your needs.
-    local SECRET_FILE_PATH="$(secret -a)";
-    local SECRET_DIR_REL_PATH=;
-    local SECRET_FILE_REL_PATH=;
-    local EXCL=;
-    local WONTATTEMPT="Won't attempt to snapshot";
-    local USER_RSYNC_OPT=;
+    while [ -n "$1" ]; do
 
-    if [ "$1" = --no-gpg ]; then
-        GPG_ARCHIVE=false;
+        case "$1" in
+
+            -n)
+
+                DRY_RUN_OPT=-n;
+
+                ;;
+
+            --restore)
+
+                if [ -n "$MEDIA_TARGET" ]; then
+                    :
+                else
+                    echo "${ERR_PREF}--restore $OII for $S targets." 1>&2 \
+                        && return 1;
+                fi;
+                RESTORE_OPT=enabled;
+
+                ;;
+
+            *)
+
+                echo "${ERR_PREF}Invalid option: $1." 1>&2 && return 1;
+
+                ;;
+
+        esac;
+
         shift;
-    fi;
 
-    while [ $# -gt 0 ] && [ "$(echo "$1"|grep -c "^--")" -gt 0 ]; do
-        USER_RSYNC_OPT="$USER_RSYNC_OPT $1";
-        shift;
     done;
 
-    [ $# -gt 1 ] \
-        && echo "${ERR_PREF}Too many arguments." 1>&2 \
-        && return 1;
+    [ -n "$MEDIA_TARGET" ] && [ -z "$RESTORE_OPT" ] && [ -z "$DRY_RUN_OPT" ] \
+        && echo $(timestamp) "$(hostname)" "->" "$TARGET" \
+        >> "$DATA_DIR/"${FUNCNAME[0]}_runs;
 
-    [ $# -gt 0 ] && DIR=$(readlink -f "$1");
-
-    [[ "$DIR" = "$DATA_DIR" \
-    || "$DIR" = "$SECRET_DIR_PATH" \
-    || "$DIR" = "$DATA_DIR"/image \
-    || "$DIR" = "$DATA_DIR"/music ]] \
-        && echo "${ERR_PREF}$WONTATTEMPT $DIR" 1>&2 \
-        && return 1;
-
-    [ "${DIR#"$DATA_DIR"/}" = "$DIR" ] \
-        && echo "${ERR_PREF}$WONTATTEMPT $DIR" \
-            "(which is outside of $DATA_DIR)" 1>&2 \
-        && return 1;
-
-    [ ! -d "$DIR" ] \
-        && echo "${ERR_PREF}Directory $DIR does not exist" 1>&2 \
-        && return 1;
-
-    DEST_DIR=$(timestamp)_"$(echo "${DIR#"$DATA_DIR"/}"|sed "s/\//__/g")";
-    DEST="$SNAP_DIR/$DEST_DIR";
-
-    SECRET_DIR_REL_PATH="${SECRET_DIR_PATH#"$DIR/"}";
-    if [ "$SECRET_DIR_REL_PATH" != "$DIR" ]; then
-        SECRET_FILE_REL_PATH="${SECRET_FILE_PATH#"$DIR/"}";
-        EXCL="--exclude=$SECRET_DIR_REL_PATH --exclude=$SECRET_FILE_REL_PATH";
+    if [ -n "$RESTORE_OPT" ]; then
+        SOURCE="$DEST/${DATA_DIR##*/}";
+        DEST="${DATA_DIR%/*}";
+        SPECIFIC_EXCLUDE=;
     fi;
 
-    mkdir -p "$DEST";
-    rsync -aAXv $EXCL $USER_RSYNC_OPT "$DIR"/ "$DEST";
-    if [ "$GPG_ARCHIVE" != "false" ]; then
-        DEST_TAR="$DEST_DIR".tar;
-        tar -C "$SNAP_DIR" -cvf "$SNAP_DIR/$DEST_TAR" "$DEST_DIR";
-        gpg -e "$SNAP_DIR/$DEST_TAR";
-        rm "$SNAP_DIR/$DEST_TAR";
-    fi;
+    rsync $DRY_RUN_OPT -aAXv $DELETE_OPT $SPECIFIC_EXCLUDE "$SOURCE" "$DEST";
 
-    freespace "$SNAP_DIR";
-}
+    [ -z "$HOST_TARGET" ] && [ -z "$DRY_RUN_OPT" ] && freespace "$DEST";
 
-rsync_host() {
+    [ -n "$HOST_TARGET" ] && [ -z "$DRY_RUN_OPT" ] && [ -n "$RESTORE_OPT" ] \
+        && freespace "$DEST";
 
-    # Synchronize ~/data on host provided as argument.
-
-    rsync -aAXv --delete $(data_dir)/ "$1":$(data_dir);
+    [ -n "$HOST_TARGET" ] && [ -z "$DRY_RUN_OPT" ] && [ -z "$RESTORE_OPT" ] \
+        && ssh "${DEST%:}" ". .bash_aliases && freespace $DATA_DIR";
 }
 
 gcal_moon_sun() {
