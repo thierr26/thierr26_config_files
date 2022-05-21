@@ -240,6 +240,22 @@ freespace() {
         "($(df --output=pcent "$F" | tail -n 1|sed "s/^ *\(.\+\)/\1/") used)";
 }
 
+tar_gpg() {
+
+    # Generate an encrypted archive (.tar.gpg file) for the file or directory
+    # provided as argument.
+
+    tar -cvf - "$1"|gpg -e > "$1".tar.gpg;
+}
+
+gpg_untar() {
+
+    # Decrypt and extract the encrypted archive (.tar.gpg file) provided as
+    # argument.
+
+    gpg -d "$1"|tar -xvf -;
+}
+
 secret() {
 
     # Crypt and decrypt the items in the "secret" directory.
@@ -364,13 +380,12 @@ secret() {
 
             if [ "$PROCESSED_ARG_1" == -e ]; then
 
-                tar -cvf - "$1"|gpg -e > "$1".tar.gpg \
-                    && find "$1" -type f -exec shred {} \; \
-                    && rm -rf "$1";
+                tar_gpg "$1" \
+                    && find "$1" -type f -exec shred {} \; && rm -rf "$1";
 
             else
 
-                gpg -d "$1.tar.gpg"|tar -xvf -;
+                 gpg_untar "$1.tar.gpg";
 
             fi;
 
