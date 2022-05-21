@@ -372,7 +372,9 @@ secret_dump() {
 
 backup_dot_gnupg() {
 
-    # Backup ~/.gnupg.
+    # Backup ~/.gnupg to ~/data/office/gpg as an encrypted archive
+    # (gpg.tar.gpg). If gpg.tar.gpg already exists, move it to a subdirectory
+    # of ~/data/office/gpg named "backup_" plus a timestamp.
 
     local TARGET=~/data/office/gpg/gpg.tar.gpg;
     local TARGET_DIR=${TARGET%/*};
