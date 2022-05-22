@@ -1,3 +1,4 @@
 .gitconfig filter=hide_git_name_and_email
 .procmailrc filter=hide_mail_dir
 .bash_aliases filter=hide_secret_dir
+system_config/etc/hosts_* filter=hide_remote_addresses

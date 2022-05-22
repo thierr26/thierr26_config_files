@@ -9,3 +9,6 @@ ff02::2 ip6-allrouters
 # Other machines on localdomain
 192.168.0.19	akela.localdomain	akela
 192.168.0.11	akela-wireless.localdomain	akela-wireless
+
+# Remote machines
+XXX.XXX.XXX.XXX	hathi

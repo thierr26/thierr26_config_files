@@ -99,6 +99,8 @@ config_clean_filters() {
             'clean_filters/hide_mail_dir %f'
         git config --local filter.hide_secret_dir.clean \
             'clean_filters/hide_secret_dir %f'
+        git config --local filter.hide_remote_addresses.clean \
+            'clean_filters/hide_remote_addresses %f'
 
     else
         echo Not in a proper directory to do that 1>&2;
