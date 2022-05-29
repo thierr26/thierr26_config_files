@@ -124,3 +124,6 @@ Subsystem	sftp	/usr/lib/openssh/sftp-server
 
 # Allow only keys of type "Ed25519".
 PubkeyAcceptedKeyTypes ssh-ed25519-cert-v01@openssh.com,ssh-ed25519
+
+# Deny SSH access to members of group sudo.
+DenyGroups sudo
