@@ -661,6 +661,8 @@ rsync_data() {
 
                 if [ -n "$MEDIA_TARGET" ]; then
                     :
+                elif [ -n "$HOST_TARGET" ]; then
+                    :
                 else
                     echo "${ERR_PREF}--restore $OII for $S targets." 1>&2 \
                         && return 1;
@@ -686,7 +688,11 @@ rsync_data() {
         >> "$DATA_DIR/"${FUNCNAME[0]}_runs;
 
     if [ -n "$RESTORE_OPT" ]; then
-        SOURCE="$DEST/${DATA_DIR##*/}";
+        if [ -z "$HOST_TARGET" ]; then
+            SOURCE="$DEST/${DATA_DIR##*/}";
+        else
+            SOURCE="$DEST${DATA_DIR##*/}";
+        fi;
         DEST="${DATA_DIR%/*}";
         SPECIFIC_EXCLUDE=;
     fi;
