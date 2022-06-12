@@ -83,7 +83,7 @@
 <string name='custom-browser' value='firefox'/>
 <string name='custom-mailer' value='xdg-open'/>
 <string name='default-charset' value='UTF-8'/>
-<string name='editor' value='gedit'/>
+<string name='editor' value='gvim'/>
 <string name='elements-show-tabs' value='text'/>
 <string name='group-pane-font' value='Sans 10'/>
 <string name='header-pane-columns' value='state,action,subject,score,author,lines,date'/>
