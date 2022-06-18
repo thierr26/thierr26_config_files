@@ -81,46 +81,11 @@
 		<separator/>
 		<!-- This requires the presence of the 'openbox-menu' package to work -->
 		<menu execute="/usr/bin/obamenu" id="applications-menu" label="Applications"/>
-		<menu id="root-menu-882143" label="Openbox">
-			<item label="Configure (with ObConf)">
-				<action name="Execute">
-					<execute>obconf</execute>
-				</action>
-			</item>
-			<item label="Edit menu (with Obmenu)">
-				<action name="Execute">
-					<execute>obmenu</execute>
-				</action>
-			</item>
-			<item label="Reload configuration">
-				<action name="Reconfigure"/>
-			</item>
-			<item label="Restart">
-				<action name="Restart"/>
-			</item>
-		</menu>
 		<separator/>
-		<item label="_Lock the console">
-			<action name="Execute">
-				<execute>physlock</execute>
-			</action>
-		</item>
 		<item label="Exit Openbox">
 			<action name="Execute">
 				<prompt>Are you sure you want to exit Openbox?</prompt>
 				<execute>openbox --exit</execute>
-			</action>
-		</item>
-		<item label="Reboot the system">
-			<action name="Execute">
-				<prompt>Are you sure you want to reboot the system?</prompt>
-				<execute>systemctl reboot</execute>
-			</action>
-		</item>
-		<item label="Shutdown the system">
-			<action name="Execute">
-				<prompt>Are you sure you want to shutdown the system?</prompt>
-				<execute>systemctl poweroff</execute>
 			</action>
 		</item>
 	</menu>
