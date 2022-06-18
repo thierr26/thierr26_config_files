@@ -77,11 +77,6 @@
 					<execute>chromium</execute>
 				</action>
 			</item>
-			<item label="GNAT Studio">
-				<action name="Execute">
-					<execute>gnatstudio</execute>
-				</action>
-			</item>
 		</menu>
 		<separator/>
 		<!-- This requires the presence of the 'openbox-menu' package to work -->
