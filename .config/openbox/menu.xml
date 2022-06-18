@@ -77,9 +77,9 @@
 					<execute>chromium</execute>
 				</action>
 			</item>
-			<item label="GNAT Programming Studio">
+			<item label="GNAT Studio">
 				<action name="Execute">
-					<execute>gnat-gps</execute>
+					<execute>gnatstudio</execute>
 				</action>
 			</item>
 		</menu>
