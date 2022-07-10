@@ -1076,3 +1076,12 @@ dlume2vcard() {
 
     done < "$INPUT_FILE";
 }
+
+sftp_dcim_camera() {
+    # Start sftp in the /DCIM/Camera of a host. The first argument is the port
+    # the SSH server is listening on and the second argument is the host
+    # address or name with the user name if needed (e.g. host_name or
+    # user_name@hsotname).
+
+    sftp -P "$1" "$2":/DCIM/Camera;
+}
