@@ -9,6 +9,7 @@ ff02::2 ip6-allrouters
 # Other machines on localdomain
 192.168.0.38	vixen.localdomain	vixen
 192.168.0.10	vixen-wireless.localdomain	vixen-wireless
+192.168.0.43	rocky.localdomain	rocky
 
 # Remote machines
 XXX.XXX.XXX.XXX	hathi

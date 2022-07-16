@@ -965,3 +965,123 @@ with_gnat_ce() {
         return 1;
     fi;
 }
+
+dlume2vcard() {
+
+    # Output the Dlume data file content in vCard (.vcf file) format.
+    # First name, last name, phone numbers and email addresses are preserved,
+    # other information are ignored.
+    #
+    # Contacts with a first or last name containing anything other than
+    # letters, single quotes (') or hyphens are ignored.
+
+    local INPUT_FILE=~/.dlume/dlume-data.xml;
+    local FIELD_NAME=;
+    local F;                                  # Short name for FIELD_NAME.
+    local FIELD_VALUE=;
+    local V;                                  # Short name for FIELD_VALUE.
+    local FIRST_NAME=;
+    local FIRST_NAME_NO_ACCENT=;
+    local LAST_NAME=;
+    local LAST_NAME_NO_ACCENT=;
+    local PHONE=;
+    local PHONE_TYPE=;
+    local EMAIL=;
+
+    local PHONE_TYPE_PREFIX="TYPE=";
+    local SEP="\n";
+    local UNACCENT="unaccent UTF-8";
+    local NRE="[^A-Za-z'-]";
+
+    local NAME_PROP=N;
+    local FORMATTED_NAME_PROP=FN;
+    local PHONE_PROP=TEL;
+    local EMAIL_PROP=EMAIL;
+
+    while IFS= read -r LINE; do
+
+        if [ "$(echo "$LINE"|grep $'^\t')" != "" ]; then
+
+            FIELD_NAME=$(echo "$LINE" | sed "s/^\s\+<\([^<>]\+\)>.*$/\1/");
+            F="$FIELD_NAME";
+
+            FIELD_VALUE=$(echo "$LINE" | sed "s/^\s\+<$F>\(.*\)<\/$F>/\1/");
+            V="$FIELD_VALUE";
+
+            case "$FIELD_NAME" in
+                first_name)
+                    FIRST_NAME="$FIELD_VALUE";
+                    FIRST_NAME_NO_ACCENT="$(echo "$FIRST_NAME" | $UNACCENT)";
+                    ;;
+                last_name)
+                    LAST_NAME="$FIELD_VALUE";
+                    LAST_NAME_NO_ACCENT="$(echo "$LAST_NAME" | $UNACCENT)";
+                    ;;
+                home_phone_*)
+                    [ -n "$PHONE" ] && PHONE="${PHONE}$SEP"
+                    if [ "$(echo "$V"|grep "^0[67]\.")" != "" ]; then
+                        PHONE_TYPE="${PHONE_TYPE_PREFIX}CELL:";
+                    elif [ "$(echo "$V"|grep "^0[123459]\.")" != "" ]; then
+                        PHONE_TYPE="${PHONE_TYPE_PREFIX}VOICE:";
+                    fi;
+                    PHONE="${PHONE}${PHONE_PROP};";
+                    PHONE="${PHONE}${PHONE_TYPE}$(echo "$V"|sed "s/\.//g")";
+                    ;;
+                work_phone_*)
+                    [ -n "$PHONE" ] && PHONE="${PHONE}$SEP"
+                    PHONE_TYPE="${PHONE_TYPE_PREFIX}WORK:";
+                    PHONE="${PHONE}${PHONE_PROP};";
+                    PHONE="${PHONE}${PHONE_TYPE}$(echo "$V"|sed "s/\.//g")";
+                    ;;
+                cell_phone_*)
+                    [ -n "$PHONE" ] && PHONE="${PHONE}$SEP"
+                    PHONE_TYPE="${PHONE_TYPE_PREFIX}CELL:";
+                    PHONE="${PHONE}${PHONE_PROP};";
+                    PHONE="${PHONE}${PHONE_TYPE}$(echo "$V"|sed "s/\.//g")";
+                    ;;
+                email_*)
+                    [ -n "$EMAIL" ] && EMAIL="${EMAIL}$SEP"
+                    EMAIL="${EMAIL}${EMAIL_PROP}:$V";
+                    ;;
+            esac;
+
+        elif [ "$(echo "$LINE"|grep '^<\/record>')" != "" ]; then
+
+            if [ "$FIRST_NAME" == "" ] \
+                || [ "$LAST_NAME" == "" ] \
+                || [ "$(echo "$FIRST_NAME_NO_ACCENT"|grep "$NRE")" != "" ] \
+                || [ "$(echo "$LAST_NAME_NO_ACCENT"|grep "$NRE")" != "" ]; then
+
+                echo IGNORED: "$FIRST_NAME" "$LAST_NAME" 1>&2;
+
+            else
+
+                echo BEGIN:VCARD
+                echo VERSION:3.0
+                echo "$NAME_PROP:${LAST_NAME};${FIRST_NAME}"
+                echo "$FORMATTED_NAME_PROP:${FIRST_NAME} ${LAST_NAME}"
+                [ -n "$PHONE" ] && PHONE="${PHONE}\n"
+                printf "$PHONE";
+                [ -n "$EMAIL" ] && EMAIL="${EMAIL}\n"
+                printf "$EMAIL";
+                echo END:VCARD
+
+            fi;
+            FIRST_NAME=;
+            LAST_NAME=;
+            PHONE=;
+            EMAIL=;
+
+        fi;
+
+    done < "$INPUT_FILE";
+}
+
+sftp_dcim_camera() {
+    # Start sftp. The destination is the /DCIM/Camera directory of a host. The
+    # first argument is the port the SSH server of the host is listening on and
+    # the second argument is the host address or name with the user name if
+    # needed (e.g. host_name or user_name@host_name).
+
+    sftp -P "$1" "$2":/DCIM/Camera;
+}
