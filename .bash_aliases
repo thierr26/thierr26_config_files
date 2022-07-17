@@ -1078,6 +1078,7 @@ dlume2vcard() {
 }
 
 sftp_dcim_camera() {
+
     # Start sftp. The destination is the /DCIM/Camera directory of a host. The
     # first argument is the port the SSH server of the host is listening on and
     # the second argument is the host address or name with the user name if
