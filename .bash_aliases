@@ -101,6 +101,8 @@ config_clean_filters() {
             'clean_filters/hide_secret_dir %f'
         git config --local filter.hide_remote_addresses.clean \
             'clean_filters/hide_remote_addresses %f'
+        git config --local filter.hide_debian_repo.clean \
+            'clean_filters/hide_debian_repo %f'
 
     else
         echo Not in a proper directory to do that 1>&2;
@@ -214,8 +216,20 @@ gamma() {
     xrandr --output "$DISPL" --gamma "$VALUE";
 }
 
+last_subdir() {
+    find "$1" -maxdepth 1 -mindepth 1 -type d | sort | tail -1;
+}
+
 data_dir() {
     echo ~/data;
+}
+
+image_data_subdir() {
+    echo image;
+}
+
+music_data_subdir() {
+    echo music;
 }
 
 snapshot_dir() {
@@ -599,8 +613,10 @@ rsync_data() {
         [ "${SNAPSHOT_TARGET#$DATA_DIR_LINK/}" == "$SNAPSHOT_TARGET" ] \
             && SNAPSHOT_TARGET=;
         [ "$SNAPSHOT_TARGET" == "$DATA_DIR_LINK" ] && SNAPSHOT_TARGET=;
-        [ "$SNAPSHOT_TARGET" == "$DATA_DIR_LINK/image" ] && SNAPSHOT_TARGET=;
-        [ "$SNAPSHOT_TARGET" == "$DATA_DIR_LINK/music" ] && SNAPSHOT_TARGET=;
+        [ "$SNAPSHOT_TARGET" == "$DATA_DIR_LINK/$(image_data_subdir)" ] \
+            && SNAPSHOT_TARGET=;
+        [ "$SNAPSHOT_TARGET" == "$DATA_DIR_LINK/$(music_data_subdir)" ] \
+            && SNAPSHOT_TARGET=;
 
         [ "${SECRET_LINK/#$SNAPSHOT_TARGET/}" == "$SECRET_LINK" ] \
             && [ "${SNAPSHOT_TARGET/#$SECRET_LINK/}" == "$SNAPSHOT_TARGET" ] \
@@ -632,7 +648,8 @@ rsync_data() {
         DEST="$MEDIA_TARGET"/"$USER";
         DELETE_OPT=--delete;
 
-        [ "$1" == "chil" ] && SPECIFIC_EXCLUDE="--exclude=image --exclude=music";
+        [ "$1" == "chil" ] && SPECIFIC_EXCLUDE=\
+"--exclude=$(image_data_subdir) --exclude=$(music_data_subdir)";
 
     else
 
@@ -1078,10 +1095,165 @@ dlume2vcard() {
 }
 
 sftp_dcim_camera() {
+
     # Start sftp. The destination is the /DCIM/Camera directory of a host. The
     # first argument is the port the SSH server of the host is listening on and
     # the second argument is the host address or name with the user name if
     # needed (e.g. host_name or user_name@host_name).
 
     sftp -P "$1" "$2":/DCIM/Camera;
+}
+
+lowercase_posix_portable() {
+
+    # Convert standard input to a lowercase POSIX portable file name. Ampersand
+    # ('&') character is converted to "and". Anything that is not a letter, a
+    # digit or an hyphen is converted to underscore ('_').
+
+    sed "s/&/and/" \
+        | unaccent UTF-8 \
+        | tr '[:upper:]' '[:lower:]' \
+        | tr -c "a-z0-9-" [_*];
+}
+
+cdown_gnudb() {
+
+    # Runs 'cdown -H gnudb.gnudb.org -P 8880'. If arguments are provided, then
+    # there must be two arguments and the first one must be "-d". The second
+    # one must be the optical disc drive device (e.g. "/dev/sr0", "/dev/sr1").
+
+    local DEV_OPT=;
+
+    if [ $# -gt 0 ]; then
+        [ $# -eq 1 ] && echo "Missing argument" 1>&2 && exit 1;
+        [ $# -gt 2 ] && echo "Too many arguments" 1>&2 && exit 1;
+        [ "$1" != "-d" ] \
+            && echo 'First argument should be "-d"' 1>&2 && exit 1;
+        echo device "$2";
+    fi;
+
+    cdown -H gnudb.gnudb.org -P 8880 $@
+}
+
+postprocess_cdown_output_for_ripcd() {
+
+    # The input (read from standard input) is supposed to be the output of
+    # 'cdown' (or of function 'cdown_gnudb'). The output is aimed at being
+    # piped to 'ripcd'.
+
+    local TEXT_KIND=;
+    local TEXT=;
+    local CONVERTED_TEXT=;
+    local TRACK_NUM_OFFS_WRITTEN=false;
+
+    while IFS= read -r LINE; do
+
+        echo "$LINE" | grep -q "^\(device\|cdname\|artist\|track\) " \
+            || continue;
+
+        if [ $TRACK_NUM_OFFS_WRITTEN == false ]; then
+            echo track_number_offset 0;
+            TRACK_NUM_OFFS_WRITTEN=true;
+        fi;
+
+        TEXT_KIND="${LINE%% *}";
+
+        [ "$TEXT_KIND" == device ] && echo "$LINE" && continue;
+
+        TEXT="${LINE#* }";
+        CONVERTED_TEXT="$(echo -n "$TEXT" | lowercase_posix_portable)";
+
+        echo "$TEXT_KIND $CONVERTED_TEXT (\"$TEXT\")"
+
+    done;
+
+    [ $TRACK_NUM_OFFS_WRITTEN == false ] \
+        || echo -e "\nIf accented letters are not rendered properly, try" \
+                   "piping cdown output to 'iconv -f latin1'." 1>&2;
+}
+
+ripcd() {
+
+    # Build audio (Ogg) files from audio CD. The input is read on standard
+    # input and is supposed to be the output of
+    # 'postprocess_cdown_output_for_ripcd'. The output files are written to the
+    # output of 'last_subdir $(data_dir)/$(music_data_subdir)'.
+
+    local TEXT_KIND=;
+    local TEXT=;
+    local CONVERTED_TEXT=;
+    local DEV_OPT=;
+    local TRACK_NUM_OFFS=0;
+    local K=0;
+    local K_S=;
+    local ARTIST=;
+    local ARTIST_CONVERTED=;
+    local CDNAME=;
+    local CDNAME_CONVERTED=;
+    local MUSIC_DIR=;
+    local OUTPUT_DIR=;
+    local OUTPUT_DIR_CREATED=false;
+    local OUTPUT_FILE;
+
+    while IFS= read -r LINE; do
+
+        TEXT_KIND="${LINE%% *}";
+        TEXT="${LINE#* }";
+
+        case "$TEXT_KIND" in
+
+            device)
+                DEV_OPT="-d $TEXT";
+                ;;
+
+            track_number_offset)
+                TRACK_NUM_OFFS="$TEXT";
+                ;;
+
+            cdname|artist|track)
+
+                CONVERTED_TEXT="${TEXT%% (\"*}";
+                TEXT="${TEXT#* (\"}";
+                TEXT="${TEXT%\")}";
+
+                case "$TEXT_KIND" in
+
+                    cdname)
+                        CDNAME="$TEXT";
+                        CDNAME_CONVERTED="$CONVERTED_TEXT";
+                        ;;
+
+                    artist)
+                        ARTIST="$TEXT";
+                        ARTIST_CONVERTED="$CONVERTED_TEXT";
+                        ;;
+
+                    track)
+                        K=$((K + 1));
+                        K_S=$(printf "%02d" $((K + $TRACK_NUM_OFFS)));
+                        OUTPUT_FILE="$OUTPUT_DIR/${K_S}_-_$CONVERTED_TEXT.ogg";
+                        echo "Creating $OUTPUT_FILE";
+                        cdparanoia $DEV_OPT $K - | oggenc -a "$ARTIST" \
+                            -t "$TEXT" -l "$CDNAME" -c "tracknumber=$K_S" \
+                            -o "$OUTPUT_FILE" -;
+                        ;;
+
+                esac;
+
+                ;;
+
+        esac;
+
+        if [ -n "$CDNAME" ] && [ -n "$ARTIST" ] \
+            && [ "$OUTPUT_DIR_CREATED" == false ]; then
+
+            MUSIC_DIR="$(last_subdir $(data_dir)/$(music_data_subdir))";
+            OUTPUT_DIR="$MUSIC_DIR/$ARTIST_CONVERTED/$CDNAME_CONVERTED";
+            mkdir -p "$OUTPUT_DIR";
+
+            OUTPUT_DIR_CREATED=true;
+
+        fi;
+
+    done;
 }

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+L_S="local SECRET_DIR_PATH";
+
+sed 's/^        { \"[^\"]\+\", \\/        { \"a.debian.repo\", \\/' $1

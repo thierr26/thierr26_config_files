@@ -2,3 +2,4 @@
 .procmailrc filter=hide_mail_dir
 .bash_aliases filter=hide_secret_dir
 system_config/etc/hosts_* filter=hide_remote_addresses
+root_user_config/.bash_aliases filter=hide_debian_repo
