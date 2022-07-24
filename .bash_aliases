@@ -101,6 +101,8 @@ config_clean_filters() {
             'clean_filters/hide_secret_dir %f'
         git config --local filter.hide_remote_addresses.clean \
             'clean_filters/hide_remote_addresses %f'
+        git config --local filter.hide_debian_repo.clean \
+            'clean_filters/hide_debian_repo %f'
 
     else
         echo Not in a proper directory to do that 1>&2;
