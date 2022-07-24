@@ -60,6 +60,7 @@ alias gstudio='gnatstudio -P default.gpr &'
 alias guestinfo='sudo virsh list --all && sudo virsh net-dhcp-leases default'
 alias list_installed_packages='dpkg-query -f '\''${binary:Package}\n'\'' -W'
 alias lla='ls -la'
+alias locate='locate -d ~/.locatedb'
 alias m=make
 alias mute='amixer -q -c 0 sset Master playback mute'
 alias nscan='sudo nmap -sP -n 192.168.0.0/24'
@@ -72,6 +73,7 @@ alias t=task
 alias ta='task add pri:M'
 alias tapp='task add pri:H +appointment'
 alias tv='vlc http://mafreebox.freebox.fr/freeboxtv/playlist.m3u &'
+alias updatedb='updatedb --output=/home/$USER/.locatedb 2>/dev/null'
 alias vi='vi -u NONE'
 alias x=startx
 
