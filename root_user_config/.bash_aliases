@@ -46,7 +46,7 @@ update_fw_for_sysupgrade() {
     nft add rule inet firewall fw_out tcp dport 53 accept
     nft add rule inet firewall fw_out udp dport 53 accept
 
-    # Create a set named "debian_sources" to table "firewall" that can store
+    # Create a set named "debian_sources" in table "firewall" that can store
     # multiple individual IPv4 addresses.
     nft add set inet firewall debian_sources { type ipv4_addr \; }
 
@@ -57,7 +57,7 @@ update_fw_for_sysupgrade() {
           "dl.google.com", \
           "debian.map.fastlydns.net" }
 
-    # Allow outgoing http queries to the addresses in the set.
+    # Allow outgoing http and https queries to the addresses in the set.
     nft add rule inet firewall fw_out \
         ip daddr @debian_sources tcp dport http accept
     nft add rule inet firewall fw_out \
