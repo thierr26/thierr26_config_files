@@ -6,8 +6,8 @@ alias fm='fetchmail --mda "procmail -f %F" && inc'
 alias g=git
 alias gb=gprbuild
 alias gc='gprclean -q'
-alias gen_cov_html_cum_report='with_gnat_ce 2018 \
-    && [ ${PWD##*/} == "src" ] \
+alias gen_cov_html_cum_report='with_gnat_ce 2018; \
+    [ ${PWD##*/} == "src" ] \
     && rm -rf ../lcov_cum \
     && mkdir ../lcov_cum \
     && gprclean -q -r -P default.gpr -XOMPACC_BUILD_MODE=coverage \
@@ -33,10 +33,10 @@ alias gen_cov_html_cum_report='with_gnat_ce 2018 \
         -t cum_$(basename $(readlink -f $(pwd)/..)) \
     && mkdir -p ../lcov_cum/html \
     && genhtml ../lcov_cum/cum_report.info -o ../lcov_cum/html \
-        -t cum_$(basename $(readlink -f $(pwd)/..)) \
-    && with_gnat_ce'
-alias gen_cov_html_report='with_gnat_ce 2018 \
-    && [ ${PWD##*/} == "src" ] \
+        -t cum_$(basename $(readlink -f $(pwd)/..)); \
+    with_gnat_ce'
+alias gen_cov_html_report='with_gnat_ce 2018; \
+    [ ${PWD##*/} == "src" ] \
     && rm -rf ../lcov \
     && mkdir ../lcov \
     && gprclean -q -r -P default.gpr -XOMPACC_BUILD_MODE=coverage \
@@ -52,8 +52,8 @@ alias gen_cov_html_report='with_gnat_ce 2018 \
         -t $(basename $(readlink -f $(pwd)/..))_test \
     && mkdir -p ../lcov/html \
     && genhtml ../lcov/report.info -o ../lcov/html \
-        -t $(basename $(readlink -f $(pwd)/..))_test \
-    && with_gnat_ce'
+        -t $(basename $(readlink -f $(pwd)/..))_test; \
+    with_gnat_ce'
 alias ggrep='git grep --no-index'
 alias gquit=gnome-session-quit
 alias gstudio='gnatstudio -P default.gpr &'
