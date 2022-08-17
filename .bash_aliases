@@ -6,8 +6,8 @@ alias fm='fetchmail --mda "procmail -f %F" && inc'
 alias g=git
 alias gb=gprbuild
 alias gc='gprclean -q'
-alias gen_cov_html_cum_report='with_gnat_ce 2018 \
-    && [ ${PWD##*/} == "src" ] \
+alias gen_cov_html_cum_report='with_gnat_ce 2018; \
+    [ ${PWD##*/} == "src" ] \
     && rm -rf ../lcov_cum \
     && mkdir ../lcov_cum \
     && gprclean -q -r -P default.gpr -XOMPACC_BUILD_MODE=coverage \
@@ -33,10 +33,10 @@ alias gen_cov_html_cum_report='with_gnat_ce 2018 \
         -t cum_$(basename $(readlink -f $(pwd)/..)) \
     && mkdir -p ../lcov_cum/html \
     && genhtml ../lcov_cum/cum_report.info -o ../lcov_cum/html \
-        -t cum_$(basename $(readlink -f $(pwd)/..)) \
-    && with_gnat_ce'
-alias gen_cov_html_report='with_gnat_ce 2018 \
-    && [ ${PWD##*/} == "src" ] \
+        -t cum_$(basename $(readlink -f $(pwd)/..)); \
+    with_gnat_ce'
+alias gen_cov_html_report='with_gnat_ce 2018; \
+    [ ${PWD##*/} == "src" ] \
     && rm -rf ../lcov \
     && mkdir ../lcov \
     && gprclean -q -r -P default.gpr -XOMPACC_BUILD_MODE=coverage \
@@ -52,14 +52,15 @@ alias gen_cov_html_report='with_gnat_ce 2018 \
         -t $(basename $(readlink -f $(pwd)/..))_test \
     && mkdir -p ../lcov/html \
     && genhtml ../lcov/report.info -o ../lcov/html \
-        -t $(basename $(readlink -f $(pwd)/..))_test \
-    && with_gnat_ce'
+        -t $(basename $(readlink -f $(pwd)/..))_test; \
+    with_gnat_ce'
 alias ggrep='git grep --no-index'
 alias gquit=gnome-session-quit
 alias gstudio='gnatstudio -P default.gpr &'
 alias guestinfo='sudo virsh list --all && sudo virsh net-dhcp-leases default'
 alias list_installed_packages='dpkg-query -f '\''${binary:Package}\n'\'' -W'
 alias lla='ls -la'
+alias locate='locate -d ~/.locatedb'
 alias m=make
 alias mute='amixer -q -c 0 sset Master playback mute'
 alias nscan='sudo nmap -sP -n 192.168.0.0/24'
@@ -72,6 +73,7 @@ alias t=task
 alias ta='task add pri:M'
 alias tapp='task add pri:H +appointment'
 alias tv='vlc http://mafreebox.freebox.fr/freeboxtv/playlist.m3u &'
+alias updatedb='updatedb --output=/home/$USER/.locatedb 2>/dev/null'
 alias vi='vi -u NONE'
 alias x=startx
 
