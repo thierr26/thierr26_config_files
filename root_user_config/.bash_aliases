@@ -55,6 +55,7 @@ update_fw_for_sysupgrade() {
         { "a.debian.repo", \
           "debian.security.org", \
           "dl.google.com", \
+          172.217.16.206, \
           "debian.map.fastlydns.net" }
 
     # Allow outgoing http and https queries to the addresses in the set.
