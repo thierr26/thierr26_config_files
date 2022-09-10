@@ -42,10 +42,6 @@ update_fw_for_sysupgrade() {
     # Allow outgoing http and https requests to some specific servers, used on
     # system updates.
 
-    # Allow outgoing DNS queries.
-    nft add rule inet firewall fw_out tcp dport 53 accept
-    nft add rule inet firewall fw_out udp dport 53 accept
-
     # Create a set named "debian_sources" in table "firewall" that can store
     # multiple individual IPv4 addresses.
     nft add set inet firewall debian_sources { type ipv4_addr \; }
@@ -99,14 +95,5 @@ restore_fw_after_sysupgrade() {
             fw_out);
 
     nft delete set inet firewall debian_sources;
-
-    nft delete rule inet firewall fw_out handle \
-        $(echo_nft_handle \
-            "\stcp dport 53 accept " list chain inet firewall \
-            fw_out);
-    nft delete rule inet firewall fw_out handle \
-        $(echo_nft_handle \
-            "\sudp dport 53 accept " list chain inet firewall \
-            fw_out);
 
 }
