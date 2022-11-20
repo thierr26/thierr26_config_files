@@ -30,6 +30,10 @@ if [ -d /usr/bin/mh ] ; then
     PATH="$PATH":/usr/bin/mh
 fi
 
+if [ -d /opt/alire/bin ] ; then
+    PATH="$PATH":/opt/alire/bin
+fi
+
 if [ -d /usr/local/opt/gnat-19.2-x86_64/bin ] ; then
     PATH="$PATH":/usr/local/opt/gnat-19.2-x86_64/bin
     export COMPILER_PATH="/usr/libexec/gcc/x86_64-redhat-linux/4.8.2:\
@@ -38,9 +42,28 @@ fi
 
 if [ -d ~/data/dvlpt/ada/ompacc/shared_gnat_project ] ; then
     if echo "$GPR_PROJECT_PATH"|grep -v -q "ompacc\/shared_gnat_project" ; then
-        export GPR_PROJECT_PATH=\
+        if [ -n "$GPR_PROJECT_PATH" ]; then
+            export GPR_PROJECT_PATH=\
 ~/data/dvlpt/ada/ompacc/shared_gnat_project:\
 ~/data/dvlpt/ada/ompacc/gnat_projects:\
 "$GPR_PROJECT_PATH"
+        else
+            export GPR_PROJECT_PATH=\
+~/data/dvlpt/ada/ompacc/shared_gnat_project:\
+~/data/dvlpt/ada/ompacc/gnat_projects
+        fi
+    fi
+fi
+
+if [ -d ~/data/dvlpt/ada/libaspocc/aspocc/gnat_project ] ; then
+    if echo "$GPR_PROJECT_PATH"|grep -v -q "aspocc\/gnat_project" ; then
+        if [ -n "$GPR_PROJECT_PATH" ]; then
+            export GPR_PROJECT_PATH=\
+~/data/dvlpt/ada/libaspocc/aspocc/gnat_project:\
+"$GPR_PROJECT_PATH"
+        else
+            export GPR_PROJECT_PATH=\
+~/data/dvlpt/ada/libaspocc/aspocc/gnat_project
+        fi
     fi
 fi

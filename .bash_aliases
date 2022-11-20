@@ -985,6 +985,89 @@ with_gnat_ce() {
     fi;
 }
 
+latest_alire_gnat_native_dep() {
+
+    # Echoes the version of the latest GNAT native Alire dependency.
+
+    find ~/.config/alire/cache/dependencies/ -mindepth 1 -maxdepth 1 -type d \
+        -regextype posix-extended \
+        -regex "^\/.*\/dependencies\/gnat_native_.*$" \
+        -exec find {}/bin -mindepth 1 -maxdepth 1 \
+        -type f -executable -name gnat \; 2>/dev/null \
+        | sed "s/^.*\/gnat_native_\([^_]\+\).*$/\1/" \
+        | sort \
+        | tail -1;
+}
+
+latest_alire_gprbuild_dep() {
+
+    # Echoes the version of the latest GPRbuild Alire dependency.
+
+    find ~/.config/alire/cache/dependencies/ -mindepth 1 -maxdepth 1 -type d \
+        -regextype posix-extended \
+        -regex "^\/.*\/dependencies\/gprbuild_.*$" \
+        -exec find {}/bin -mindepth 1 -maxdepth 1 \
+        -type f -executable -name gprbuild \; 2>/dev/null \
+        | sed "s/^.*\/gprbuild_\([^_]\+\).*$/\1/" \
+        | sort \
+        | tail -1;
+}
+
+latest_alire_gnatprove_dep() {
+
+    # Echoes the version of the latest GNATprove Alire dependency.
+
+    find ~/.config/alire/cache/dependencies/ -mindepth 1 -maxdepth 1 -type d \
+        -regextype posix-extended \
+        -regex "^\/.*\/dependencies\/gnatprove_.*$" \
+        -exec find {}/bin -mindepth 1 -maxdepth 1 \
+        -type f -executable -name gnatprove \; 2>/dev/null \
+        | sed "s/^.*\/gnatprove_\([^_]\+\).*$/\1/" \
+        | sort \
+        | tail -1;
+}
+
+with_alire_deps() {
+
+    local LATEST_GNAT_NATIVE_VERSION=$(latest_alire_gnat_native_dep);
+
+    if [ -z "$LATEST_GNAT_NATIVE_VERSION" ]; then
+        echo "No GNAT native Alire dependency found" 1>&2;
+        return 1;
+    fi;
+
+    local LATEST_GPRBUILD_VERSION=$(latest_alire_gprbuild_dep);
+
+    if [ -z "$LATEST_GPRBUILD_VERSION" ]; then
+        echo "No GPRbuild Alire dependency found" 1>&2;
+        return 1;
+    fi;
+
+    local LATEST_GNATPROVE_VERSION=$(latest_alire_gnatprove_dep);
+
+    if [ -z "$LATEST_GNATPROVE_VERSION" ]; then
+        echo "No GNATprove Alire dependency found" 1>&2;
+        return 1;
+    fi;
+
+    local PREFIX=~/.config/alire/cache/dependencies;
+    local V=;
+
+    V="$LATEST_GNAT_NATIVE_VERSION";
+    local GNAT_NATIV_BIN_DIR=\
+$(find "$PREFIX/gnat_native_$V"*/bin -mindepth 0 -maxdepth 0 -type d);
+
+    V="$LATEST_GPRBUILD_VERSION";
+    local GPRBUILD_BIN_DIR=\
+$(find "$PREFIX/gprbuild_$V"*/bin -mindepth 0 -maxdepth 0 -type d);
+
+    V="$LATEST_GNATPROVE_VERSION";
+    local GNATPROV_BIN_DIR=\
+$(find "$PREFIX/gnatprove_$V"*/bin -mindepth 0 -maxdepth 0 -type d);
+
+    PATH="$GNAT_NATIV_BIN_DIR":"$GPRBUILD_BIN_DIR":"$GNATPROV_BIN_DIR":"$PATH"
+}
+
 dlume2vcard() {
 
     # Output the Dlume data file content in vCard (.vcf file) format.
