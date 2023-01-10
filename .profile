@@ -67,3 +67,16 @@ if [ -d ~/data/dvlpt/ada/libaspocc/aspocc/gnat_project ] ; then
         fi
     fi
 fi
+
+if [ -d ~/data/dvlpt/ada/tesstam/gnat_project ] ; then
+    if echo "$GPR_PROJECT_PATH"|grep -v -q "tesstam\/gnat_project" ; then
+        if [ -n "$GPR_PROJECT_PATH" ]; then
+            export GPR_PROJECT_PATH=\
+~/data/dvlpt/ada/tesstam/gnat_project:\
+"$GPR_PROJECT_PATH"
+        else
+            export GPR_PROJECT_PATH=\
+~/data/dvlpt/ada/tesstam/gnat_project
+        fi
+    fi
+fi
