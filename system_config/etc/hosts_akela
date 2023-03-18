@@ -1,5 +1,5 @@
 127.0.0.1	localhost
-127.0.1.1	akela.localdomain	akela
+127.0.1.1	arion.localdomain	arion
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     localhost ip6-localhost ip6-loopback
@@ -7,9 +7,9 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 
 # Other machines on localdomain
-192.168.0.38	vixen.localdomain	vixen
-192.168.0.10	vixen-wireless.localdomain	vixen-wireless
-192.168.0.43	rocky.localdomain	rocky
+192.168.0.38	vytis.localdomain	vytis
+192.168.0.10	vytis-wireless.localdomain	vytis-wireless
+192.168.0.43	yvaga.localdomain	yvaga
 
 # Remote machines
 XXX.XXX.XXX.XXX	horna
