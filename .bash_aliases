@@ -527,6 +527,10 @@ media() {
     [ "$MEDIA_PATH" == "$MEDIA_ROOT" ] && echo "${ERR_PREF}$IA." 1>&2 \
         && return 1;
 
+    [ "${MEDIA_PATH#$MEDIA_ROOT}" == "$MEDIA_PATH" ] \
+        && echo "${ERR_PREF}$IA." 1>&2 \
+        && return 1;
+
     echo "$MEDIA_PATH";
     if [ $DO_CHECK == true ]; then
         [ -d "$MEDIA_PATH" ];
