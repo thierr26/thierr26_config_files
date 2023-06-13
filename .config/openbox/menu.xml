@@ -3,7 +3,7 @@
 	<menu id="root-menu" label="Openbox 3">
 		<item label="_tmux in xterm (undecorated)">
 			<action name="Execute">
-				<execute>xterm tmux</execute>
+				<execute>xterm -e /bin/bash -i -c tmux</execute>
 			</action>
 		</item>
 		<item label="Sa_kura">

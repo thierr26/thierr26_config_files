@@ -654,7 +654,7 @@ rsync_data() {
         DEST="$MEDIA_TARGET"/"$USER";
         DELETE_OPT=--delete;
 
-        [ "$1" == "chil" ] && SPECIFIC_EXCLUDE=\
+        [ "$1" == "chee" ] && SPECIFIC_EXCLUDE=\
 "--exclude=$(image_data_subdir) --exclude=$(music_data_subdir)";
 
     else
