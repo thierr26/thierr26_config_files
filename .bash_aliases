@@ -56,7 +56,7 @@ alias gen_cov_html_report='with_gnat_ce 2018; \
     with_gnat_ce'
 alias ggrep='git grep --no-index'
 alias gquit=gnome-session-quit
-alias gstudio='gnatstudio -P default.gpr &'
+alias gstudio='~/local/GNAT_Studio-x86_64.AppImage -P default.gpr &'
 alias guestinfo='sudo virsh list --all && sudo virsh net-dhcp-leases default'
 alias list_installed_packages='dpkg-query -f '\''${binary:Package}\n'\'' -W'
 alias lla='ls -la'
