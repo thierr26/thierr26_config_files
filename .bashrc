@@ -139,5 +139,5 @@ BASE16_SHELL=$HOME/.config/base16-shell/
     && eval "$($BASE16_SHELL/profile_helper.sh)"
 unset in_ssh_session
 
-[ -f .do_not_call_with_gnat_ce ] || with_gnat_ce;
-[ -f .do_not_call_with_alire_deps ] || with_alire_deps;
+[ -f ~/.do_not_call_with_gnat_ce ] || with_gnat_ce;
+[ -f ~/.do_not_call_with_alire_deps ] || with_alire_deps;
