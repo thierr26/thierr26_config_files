@@ -36,5 +36,5 @@ report.app_w.labels=ID,Tags,Due,Description
 dateformat=Y-M-DTH:N:S
 
 # Text width used when output is piped
-defaultwidth=160
+defaultwidth=0
 news.version=2.6.0
