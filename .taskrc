@@ -30,10 +30,11 @@ include /usr/share/taskwarrior/dark-blue-256.theme
 #include /usr/share/taskwarrior/no-color.theme
 report.app_w.description=Appointments in the 12 comming days
 report.app_w.columns=id,tags,due,description
-report.app_w.filter=+appointment (status:pending or status:waiting) due.before:12d
+report.app_w.filter=+appointment status:pending due.before:12d
 report.app_w.sort=due
 report.app_w.labels=ID,Tags,Due,Description
 dateformat=Y-M-DTH:N:S
 
 # Text width used when output is piped
 defaultwidth=160
+news.version=2.6.0
