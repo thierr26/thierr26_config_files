@@ -660,6 +660,7 @@ rsync_data() {
     else
 
         SOURCE="$SNAPSHOT_TARGET"/;
+        mkdir -p "$(snapshot_dir)";
         DEST="$(snapshot_dir)"/$(timestamp)_;
         DEST="$DEST$(echo "${SNAPSHOT_TARGET#"$DATA_DIR"/}" \
             | sed "s/\//__/g")";
