@@ -515,3 +515,18 @@ inoremap <F11> <ESC>:call RepeatMake()<CR>
 " Map <F3> to function 'CleanBuildEnv', in normal and insert modes.
 nnoremap <F3> :call CleanBuildEnv()<CR>
 inoremap <F3> <ESC>:call CleanBuildEnv()<CR>
+
+" Useful to make some highlight groups visible when using Vim through SSH in
+" Windows 10 cmd.
+function Fix_Highlighting()
+    hi StatusLine ctermfg=lightblue
+    hi StatusLineNC ctermfg=darkgray
+    hi Boolean ctermfg=darkred
+    hi Constant ctermfg=darkred
+    hi Number ctermfg=darkred
+    hi Float ctermfg=darkred
+    hi SpecialChar ctermfg=lightblue
+    hi Delimiter ctermfg=lightblue
+
+endfunction
+nnoremap <Leader>w :call Fix_Highlighting()<CR>
