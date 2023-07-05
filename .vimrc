@@ -169,7 +169,349 @@ nnoremap <Leader>C :hi! link Comment Comment<CR>
 " Always display cursor position.
 set ruler
 
-" Set options for Diapp plugin.
-let g:diapp_gprbuild_comm_msg = 0
-let g:diapp_gprbuild_hide_qf_on_successful_rerun = 1
-let g:diapp_gprbuild_default_gprclean_options = "-q -r"
+" -----------------------------------------------------------------------------
+
+" Right pad current line with character under the cursor, so that line width
+" reaches the desired width.
+"
+" The desired width is the value provided as argument. If no argument is
+" provided, then the desired width is '&textwidth' if '&textwidth' is not zero.
+" Otherwise it is 79.
+"
+" Arguments:
+"
+" #1 (optional) - Desired width.
+
+function AutoFill(...)
+
+    if a:0 > 0
+        " Width argument provided.
+
+        " Use argument as desired auto-filled line width.
+        let l:width = a:1
+
+    else
+        " Width argument not provided.
+
+        " Use '&textwidth' as desired auto-filled line width (or 79 if
+        " '&textwidth' is 0).
+        let l:width = &textwidth == 0 ? 79 : &textwidth
+
+    endif
+
+    " Get current line.
+    let l:l = getline('.')
+
+    " Get character under cursor.
+    let l:cur_char = matchstr(l:l, '\%' . col('.') . 'c.')
+
+    " Number of characters needed to reach desired width.
+    let l:n = l:width - strwidth(l:l)
+
+    " Update current line, right padding it with the character under the cursor
+    " up to the desired width.
+    call setline(line('.'), l:l . repeat(l:cur_char, l:n))
+
+endfunction
+
+" -----------------------------------------------------------------------------
+
+" Save current buffer to file if modified, then edit file with name
+" 'b:alt_name'.
+"
+" Particular case: If file with name 'b:alt_name' is already edited in the same
+" tab page, then buffers are just exchanged in the windows.
+
+function EditAltNameFile()
+
+    if !exists("b:alt_name") || empty(b:alt_name)
+
+        echohl ErrorMsg
+        echomsg "Don't know what to do"
+        echohl None
+
+    elseif filereadable(b:alt_name)
+
+        let l:nbuf = bufnr(b:alt_name)
+        if l:nbuf != -1
+            " There is already a buffer for file with name 'b:alt_name'.
+
+            " Get the buffer list for the current tab page.
+            let l:buf = tabpagebuflist()
+
+            if index(l:buf, l:nbuf) != -1
+                " File with name 'b:alt_name' is edited in the current tab
+                " page.
+
+                " Number of the window containing the buffer for file with name
+                " 'b:alt_name'.
+                let l:nwin = bufwinnr(b:alt_name)
+
+                " Number of the current window.
+                let l:cwin = winnr()
+
+                " Number of the current buffer.
+                let l:cbuf = bufnr('%')
+
+                " Exchange buffers in the windows.
+                execute l:nwin . "wincmd w"
+                execute l:cbuf . "buffer!"
+                execute l:cwin . "wincmd w"
+                execute l:nbuf . "buffer!"
+
+            else
+                " File with name 'b:alt_name' is edited but not in the current
+                " tab page.
+
+                " Write buffer to file if modified.
+                if &mod
+                    w
+                endif
+
+                " Edit buffer for file with name 'b:alt_name'.
+                execute "buffer " . b:alt_name
+
+            endif
+
+        else
+            " There is no buffer for file with name 'b:alt_name'.
+
+            " Write buffer to file if modified.
+            if &mod
+                w
+            endif
+
+            " Edit file with name 'b:alt_name'.
+            execute "edit " . b:alt_name
+
+        endif
+
+    else
+
+        echohl ErrorMsg
+        echomsg b:alt_name . " does not exist or is not readable"
+        echohl None
+
+    endif
+
+endfunction
+
+" -----------------------------------------------------------------------------
+"
+" Execute ':make' and open the quickfix window if there are errors.
+
+function Make()
+
+    execute "normal! :make\<bar>cwin\<cr>"
+
+endfunction
+
+" -----------------------------------------------------------------------------
+
+" If the following conditions are all true:
+"
+" - Variable 'g:last_quick_fix_cmd_edited_file_name' exists.
+"
+" - Variable 'g:last_quick_fix_cmd_buffer_number' exists.
+"
+" - There is a buffer with number 'g:last_quick_fix_cmd_buffer_number'.
+"
+" - The buffer with number 'g:last_quick_fix_cmd_buffer_number' is associated with
+"   file with name 'g:last_quick_fix_cmd_edited_file_name'.
+"
+" then function 'Make' is called.
+"
+" Before calling 'Make', a move to a window associated with buffer with number
+" 'g:last_quick_fix_cmd_buffer_number' is done if such window exists or
+" quickfix window is closed (if opened) and buffer with number
+" 'g:last_quick_fix_cmd_buffer_number' is edited.
+
+function RepeatMake()
+
+    let l:err = exists("g:last_quick_fix_cmd_edited_file_name") == 0
+                \ || exists("g:last_quick_fix_cmd_buffer_number") == 0
+
+    if !l:err
+
+        let l:nbuf = bufnr(g:last_quick_fix_cmd_edited_file_name)
+        let l:err = l:nbuf == -1
+
+    endif
+
+    if l:err
+
+        echohl ErrorMsg
+        echomsg "Cannot repeat :make"
+        echohl None
+        return
+
+    endif
+
+    " Get the buffer list for the current tab page.
+    let l:buf = tabpagebuflist()
+
+    if index(l:buf, l:nbuf) != -1
+        " File with name 'g:last_quick_fix_cmd_edited_file_name' is edited in
+        " the current tab page.
+
+        " Number of the window containing the buffer for file with name
+        " 'g:last_quick_fix_cmd_edited_file_name'.
+        let l:nwin = bufwinnr(g:last_quick_fix_cmd_edited_file_name)
+
+        " Move to that window.
+        execute l:nwin . "wincmd w"
+
+    else
+
+        " Close the quickfix window.
+        execute "cclose"
+
+        " Edit buffer for file with name
+        " 'g:last_quick_fix_cmd_edited_file_name'.
+        execute "buffer " . g:last_quick_fix_cmd_edited_file_name
+
+    endif
+
+    call Make()
+
+endfunction
+
+" -----------------------------------------------------------------------------
+
+" If the variable 'b:clear_build_env_cmd' command does not exists, then issues
+" an error message. Otherwise, executes the command stored in
+" 'b:clear_build_env_cmd' with the shell.
+
+function CleanBuildEnv()
+
+    let l:var_name = "b:clear_build_env_cmd"
+
+    if exists(l:var_name) == 0
+
+        echohl ErrorMsg
+        echomsg "Variable " . l:var_name . " does not exist, can't do anything"
+        echohl None
+        return
+
+    endif
+
+    :call system(eval(l:var_name))
+
+endfunction
+
+" -----------------------------------------------------------------------------
+
+" Autocommands for Ada source files
+augroup ada
+
+    au!
+
+    " Set autowrite.
+    au BufNewFile,BufReadPost,BufFilePost *.ad[abs] {
+        setlocal autowrite
+    }
+
+    " Set tabulation parameters.
+    au BufNewFile,BufReadPost,BufFilePost *.ad[abs] {
+        setlocal tabstop=3 expandtab shiftwidth=3 softtabstop=3
+    }
+
+    " Compute the name of the body file for a specification and conversely.
+    au BufNewFile,BufReadPost,BufFilePost *.ads {
+        b:alt_name = substitute(expand('%'), "...$", "adb", "")
+    }
+    au BufNewFile,BufReadPost,BufFilePost *.adb {
+        b:alt_name = substitute(expand('%'), "...$", "ads", "")
+    }
+    au BufNewFile,BufReadPost,BufFilePost *_.ada {
+        b:alt_name = substitute(expand('%'), ".....$", ".ada", "")
+    }
+    au BufNewFile,BufReadPost,BufFilePost *[^_].ada {
+        b:alt_name = substitute(expand('%'), "....$", "_.ada", "")
+    }
+
+    " Set makeprg.
+    au BufNewFile,BufReadPost,BufFilePost *.ads {
+        setlocal makeprg=gprbuild\ -n\ -q\ -c\ -gnatc\ -p
+                    \\ -P\ default.gpr\ -u\ %
+    }
+    au BufNewFile,BufReadPost,BufFilePost *.adb {
+        setlocal makeprg=gprbuild\ -n\ -q\ -p\ -P\ default.gpr\ -u\ %
+    }
+
+    " Store edited file name and buffer number to global variables on :make
+    " command invocation. Variables used by RepeatMake().
+    au QuickFixCmdPre make {
+        g:last_quick_fix_cmd_edited_file_name = expand('%:p')
+        g:last_quick_fix_cmd_buffer_number    = bufnr('%')
+    }
+
+    " Store the compiler generated files removing command.
+    au BufNewFile,BufReadPost,BufFilePost *.ad[abs] {
+        b:clear_build_env_cmd = "gprclean -q -r -P default.gpr"
+    }
+
+augroup END
+
+" Autocommands for GNAT project files
+augroup gpr
+
+    au!
+
+    " Set autowrite.
+    au BufNewFile,BufReadPost,BufFilePost *.gpr {
+        setlocal autowrite
+    }
+
+    " Set tabulation parameters.
+    au BufNewFile,BufReadPost,BufFilePost *.gpr {
+        setlocal tabstop=3 expandtab shiftwidth=3 softtabstop=3
+    }
+
+    " Set makeprg.
+    au BufNewFile,BufReadPost,BufFilePost *.gpr {
+        setlocal makeprg=gprbuild\ -n\ -q\ -k\ -p\ -P\ %
+    }
+
+    " Store edited file name and buffer number to global variables on :make
+    " command invocation. Variables used by RepeatMake().
+    au QuickFixCmdPre make {
+        g:last_quick_fix_cmd_edited_file_name = expand('%:p')
+        g:last_quick_fix_cmd_buffer_number = bufnr('%')
+    }
+
+    " Store the compiler generated files removing command.
+    au BufNewFile,BufReadPost,BufFilePost *.gpr {
+        b:clear_build_env_cmd = "gprclean -q -r -P default.gpr"
+    }
+
+augroup END
+
+" Autocommands for the quickfix window
+augroup quickfixwindow
+
+    au!
+
+    au BufWinEnter quickfix {
+        setlocal wrap nolist
+    }
+
+augroup END
+
+" Associate function 'AutoFill' to command ':AF'.
+command -nargs=? AF :call AutoFill(<f-args>)
+
+" Associate function 'EditAltNameFile' to command ':A'.
+command -nargs=0 A :call EditAltNameFile()
+
+" Map <F10> to ':make', in normal and insert modes.
+nnoremap <F10> :call Make()<CR>
+inoremap <F10> <ESC>:call Make()<CR>
+
+" Map <F11> to function 'RepeatMake', in normal and insert modes.
+nnoremap <F11> :call RepeatMake()<CR>
+inoremap <F11> <ESC>:call RepeatMake()<CR>
+
+" Map <F3> to function 'CleanBuildEnv', in normal and insert modes.
+nnoremap <F3> :call CleanBuildEnv()<CR>
+inoremap <F3> <ESC>:call CleanBuildEnv()<CR>
