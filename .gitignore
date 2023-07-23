@@ -31,6 +31,9 @@
 !.pan2/preferences.xml
 !.procmailrc
 !.profile
+.ssh/*
+!.ssh
+!.ssh/config
 !.Xresources
 !.bashrc
 !.bash_aliases
