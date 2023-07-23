@@ -156,6 +156,9 @@ inoremap kj <ESC>
 " Make "," the "leader" key (instead of the backslash).
 let mapleader = ","
 
+" Map <Leader>b to buffer number printing.
+nnoremap <Leader>b :echo bufnr('%')<CR>
+
 " Map <Leader>a to the search of non ASCII characters.
 nnoremap <Leader>a /[^\x00-\x7F]<CR>
 
