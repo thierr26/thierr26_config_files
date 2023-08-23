@@ -1032,6 +1032,20 @@ latest_alire_gnatprove_dep() {
         | tail -1;
 }
 
+latest_alire_gnatcov_dep() {
+
+    # Echoes the version of the latest GNATcoverage Alire dependency.
+
+    find ~/.config/alire/cache/dependencies/ -mindepth 1 -maxdepth 1 -type d \
+        -regextype posix-extended \
+        -regex "^\/.*\/dependencies\/gnatcov_.*$" \
+        -exec find {}/bin -mindepth 1 -maxdepth 1 \
+        -type f -executable -name gnatcov \; 2>/dev/null \
+        | sed "s/^.*\/gnatcov_\([^_]\+\).*$/\1/" \
+        | sort \
+        | tail -1;
+}
+
 with_alire_deps() {
 
     local LATEST_GNAT_NATIVE_VERSION=$(latest_alire_gnat_native_dep);
@@ -1055,6 +1069,13 @@ with_alire_deps() {
         return 1;
     fi;
 
+    local LATEST_GNATCOV_VERSION=$(latest_alire_gnatcov_dep);
+
+    if [ -z "$LATEST_GNATCOV_VERSION" ]; then
+        echo "No GNATcoverage Alire dependency found" 1>&2;
+        return 1;
+    fi;
+
     local PREFIX=~/.config/alire/cache/dependencies;
     local V=;
 
@@ -1067,10 +1088,19 @@ $(find "$PREFIX/gnat_native_$V"*/bin -mindepth 0 -maxdepth 0 -type d);
 $(find "$PREFIX/gprbuild_$V"*/bin -mindepth 0 -maxdepth 0 -type d);
 
     V="$LATEST_GNATPROVE_VERSION";
-    local GNATPROV_BIN_DIR=\
+    local GNATPROVE_BIN_DIR=\
 $(find "$PREFIX/gnatprove_$V"*/bin -mindepth 0 -maxdepth 0 -type d);
 
-    PATH="$GNAT_NATIV_BIN_DIR":"$GPRBUILD_BIN_DIR":"$GNATPROV_BIN_DIR":"$PATH"
+    V="$LATEST_GNATCOV_VERSION";
+    local GNATCOV_BIN_DIR=\
+$(find "$PREFIX/gnatcov_$V"*/bin -mindepth 0 -maxdepth 0 -type d);
+
+    PATH=\
+"$GNAT_NATIV_BIN_DIR":\
+"$GPRBUILD_BIN_DIR":\
+"$GNATPROVE_BIN_DIR":\
+"$GNATCOV_BIN_DIR":\
+"$PATH"
 }
 
 dlume2vcard() {
