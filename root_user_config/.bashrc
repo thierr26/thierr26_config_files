@@ -13,11 +13,7 @@ else
         && in_ssh_session=yes
     unset tty_dev tty_dev_trimmed
 fi
-if [ -n "$in_ssh_session" ]; then
-    ps1_host_part='@\[\033[47m\]\[\033[32m\]\h\[\033[00m\]'
-else
-    ps1_host_part=
-fi
+ps1_host_part='@\[\033[47m\]\[\033[32m\]\h\[\033[00m\]'
 PS1="\[\033[41m\]\[\033[01;32m\]\u\[\033[00m\]$ps1_host_part:\[\033[32m\]\w\[\033[00m\]\$ "
 unset in_ssh_session ps1_host_part
 

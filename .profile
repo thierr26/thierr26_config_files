@@ -80,3 +80,19 @@ if [ -d ~/data/dvlpt/ada/tesstam/gnat_project ] ; then
         fi
     fi
 fi
+
+if [ -d ~/.config/alire/cache/dependencies/gnatcov_22.0.1_eae687f0/share\
+/gnatcoverage/gnatcov_rts ] ; then
+    if echo "$GPR_PROJECT_PATH"|grep -v -q "gnatcoverage\/gnatcov_rts" ; then
+        if [ -n "$GPR_PROJECT_PATH" ]; then
+            export GPR_PROJECT_PATH=\
+~/.config/alire/cache/dependencies/gnatcov_22.0.1_eae687f0/share\
+/gnatcoverage/gnatcov_rts:\
+"$GPR_PROJECT_PATH"
+        else
+            export GPR_PROJECT_PATH=\
+~/.config/alire/cache/dependencies/gnatcov_22.0.1_eae687f0/share\
+/gnatcoverage/gnatcov_rts
+        fi
+    fi
+fi
