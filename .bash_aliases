@@ -650,12 +650,18 @@ rsync_data() {
 
     elif [ -n "$MEDIA_TARGET" ]; then
 
+        local IDIR="$(data_dir)/$(image_data_subdir)";
+        local MDIR="$(data_dir)/$(music_data_subdir)";
+
+        IDIR="${IDIR#$HOME/}";
+        MDIR="${MDIR#$HOME/}";
+
         SOURCE="$DATA_DIR";
         DEST="$MEDIA_TARGET"/"$USER";
         DELETE_OPT=--delete;
 
-        [ "$1" == "chee" ] && SPECIFIC_EXCLUDE=\
-"--exclude=$(image_data_subdir) --exclude=$(music_data_subdir)";
+        [ "$1" == "chee" ] \
+            && SPECIFIC_EXCLUDE="--exclude=$IDIR --exclude=$MDIR";
 
     else
 

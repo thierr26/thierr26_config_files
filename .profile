@@ -81,6 +81,46 @@ if [ -d ~/data/dvlpt/ada/tesstam/gnat_project ] ; then
     fi
 fi
 
+if [ -d ~/data/dvlpt/ada/libattino/attino ] ; then
+    if echo "$GPR_PROJECT_PATH"|grep -v -q "libattino\/attino" ; then
+        if [ -n "$GPR_PROJECT_PATH" ]; then
+            export GPR_PROJECT_PATH=\
+~/data/dvlpt/ada/libattino/attino:\
+"$GPR_PROJECT_PATH"
+        else
+            export GPR_PROJECT_PATH=\
+~/data/dvlpt/ada/libattino/attino
+        fi
+    fi
+fi
+
+if [ -d ~/data/dvlpt/ada/libccutest/ccutest ] ; then
+    if echo "$GPR_PROJECT_PATH"|grep -v -q "libccutest\/ccutest" ; then
+        if [ -n "$GPR_PROJECT_PATH" ]; then
+            export GPR_PROJECT_PATH=\
+~/data/dvlpt/ada/libccutest/ccutest:\
+"$GPR_PROJECT_PATH"
+        else
+            export GPR_PROJECT_PATH=\
+~/data/dvlpt/ada/libccutest/ccutest
+        fi
+    fi
+fi
+
+if [ -d ~/data/dvlpt/ada/libccutest/ccutest_selftest ] ; then
+    if echo "$GPR_PROJECT_PATH"\
+        |grep -v -q "libccutest\/ccutest_selftest" ; then
+        if [ -n "$GPR_PROJECT_PATH" ]; then
+            export GPR_PROJECT_PATH=\
+~/data/dvlpt/ada/libccutest/ccutest_selftest:\
+"$GPR_PROJECT_PATH"
+        else
+            export GPR_PROJECT_PATH=\
+~/data/dvlpt/ada/libccutest/ccutest_selftest
+        fi
+    fi
+fi
+
 if [ -d ~/.config/alire/cache/dependencies/gnatcov_22.0.1_eae687f0/share\
 /gnatcoverage/gnatcov_rts ] ; then
     if echo "$GPR_PROJECT_PATH"|grep -v -q "gnatcoverage\/gnatcov_rts" ; then
