@@ -7,9 +7,12 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 
 # Other machines on localdomain
+192.168.1.13	arkas.localdomain	arkas
 192.168.0.38	vytis.localdomain	vytis
 192.168.0.10	vytis-wireless.localdomain	vytis-wireless
+# 192.168.1.14	vytis.localdomain	vytis
 192.168.0.43	yvaga.localdomain	yvaga
+# 192.168.1.12	yvaga.localdomain	yvaga
 
 # Remote machines
 XXX.XXX.XXX.XXX	horna
