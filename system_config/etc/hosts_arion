@@ -8,6 +8,7 @@ ff02::2 ip6-allrouters
 
 # Other machines on localdomain
 192.168.1.13	arkas.localdomain	arkas
+192.168.1.15	sissi.localdomain	sissi
 192.168.0.38	vytis.localdomain	vytis
 192.168.0.10	vytis-wireless.localdomain	vytis-wireless
 # 192.168.1.14	vytis.localdomain	vytis
