@@ -73,7 +73,7 @@ if [ "$color_prompt" = yes ]; then
         ps1_host_part=
     fi
     PS1="\[\033[36m\]\u\[\033[00m\]$ps1_host_part:\[\033[33m\]\w\[\033[00m\]\$ "
-    unset ps1_host_part
+    unset ps1_host_part in_ssh_session
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -132,12 +132,12 @@ fi
 # resume).
 stty -ixon
 
-BASE16_SHELL=$HOME/.config/base16-shell/
-[ -n "$PS1" ] \
-    && [ -z $in_ssh_session ] \
-    && [ -s $BASE16_SHELL/profile_helper.sh ] \
-    && source "$BASE16_SHELL/profile_helper.sh"
-unset in_ssh_session
+BASE16_SHELL_PATH=$HOME/.config/base16-shell/
+unset BASE16_THEME
+! shopt -q login_shell || [ -n "$TMUX" ] \
+    && [ -s "$BASE16_SHELL_PATH/profile_helper.sh" ] \
+    && BASE16_SHELL_SET_BACKGROUND=false \
+    && source "$BASE16_SHELL_PATH/profile_helper.sh"
 
 [ -f ~/.do_not_call_with_gnat_ce ] || with_gnat_ce;
 [ -f ~/.do_not_call_with_alire_deps ] || with_alire_deps;
