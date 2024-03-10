@@ -144,10 +144,17 @@ endif
 " Do auto-indentation.
 set autoindent
 
-" Use base16 (see https://ddrscott.github.io/blog/2017/base16-shell).
-if filereadable(expand("~/.vimrc_background"))
+" Use Base16 color scheme.
+if exists('$BASE16_THEME')
+            \ && (!exists('g:colors_name')
+            \ || g:colors_name != 'base16-$BASE16_THEME')
+
     let base16colorspace=256
-    source ~/.vimrc_background
+    if !has("gui_running")
+        let base16_background_transparent=1
+    endif
+    colorscheme base16-$BASE16_THEME
+
 endif
 
 " Remap ESC to "kj" in insert mode.
