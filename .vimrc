@@ -440,10 +440,10 @@ augroup ada
     " Set makeprg.
     au BufNewFile,BufReadPost,BufFilePost *.ads {
         setlocal makeprg=gprbuild\ -n\ -q\ -c\ -gnatc\ -p
-                    \\ -P\ default.gpr\ -u\ %
+                    \\ -gnatef\ -P\ default.gpr\ -u\ %
     }
     au BufNewFile,BufReadPost,BufFilePost *.adb {
-        setlocal makeprg=gprbuild\ -n\ -q\ -p\ -P\ default.gpr\ -u\ %
+        setlocal makeprg=gprbuild\ -n\ -q\ -p\ -gnatef\ -P\ default.gpr\ -u\ %
     }
 
     " Store edited file name and buffer number to global variables on :make
@@ -477,7 +477,7 @@ augroup gpr
 
     " Set makeprg.
     au BufNewFile,BufReadPost,BufFilePost *.gpr {
-        setlocal makeprg=gprbuild\ -n\ -q\ -k\ -p\ -P\ %
+        setlocal makeprg=gprbuild\ -n\ -q\ -k\ -p\ -gnatef\ -P\ %
     }
 
     " Store edited file name and buffer number to global variables on :make
